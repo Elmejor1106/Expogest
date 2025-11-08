@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscripción a Evento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #17a2b8;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        nav {
+            background-color: #ffffff;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            color: #17a2b8;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #11707d;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-container select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #17a2b8;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #11707d;
+        }
+    </style>
+</head>
+<body>
+    <header>Inscribirse a Evento</header>
+
+    <nav>
+        <a th:href="@{/visitante/panelVisitante}">Volver al Panel</a>
+    </nav>
+
+    <div class="form-container">
+        <form th:action="@{/visitante/inscripcion/guardar}" th:object="${participacion}" method="post">
+            <label for="usuario">Visitante:</label>
+            <select id="usuario" th:field="*{usuario.id}" required>
+                <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}"></option>
+            </select>
+
+            <label for="evento">Evento:</label>
+            <select id="evento" th:field="*{evento.id}" required>
+                <option th:each="e : ${eventos}" th:value="${e.id}" th:text="${e.nombre}"></option>
+            </select>
+
+            <button type="submit">Inscribirse</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Participaciones</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Participaciones</h1>
+    <a th:href="@{/participaciones/nuevo}">Nueva Participación</a>
+    <table border="1">
+        <tr>
+            <th>ID</th><th>Usuario</th><th>Evento</th><th>Tipo</th><th>Acciones</th>
+        </tr>
+        <tr th:each="p : ${participaciones}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.usuario.nombre}"></td>
+            <td th:text="${p.evento.nombre}"></td>
+            <td th:text="${p.tipoParticipacion}"></td>
+            <td>
+                <a th:href="@{/participaciones/editar/{id}(id=${p.id})}">Editar</a>
+                <a th:href="@{/participaciones/eliminar/{id}(id=${p.id})}" onclick="return confirm('¿Eliminar?');">Eliminar</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

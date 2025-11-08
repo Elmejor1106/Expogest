@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo/Editar Stand</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4 class="text-center mb-0" th:text="${stand.id == null} ? 'Nuevo Stand' : 'Editar Stand'"></h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/stands/guardar}" th:object="${stand}" method="post" class="row g-3">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="ubicacion" class="form-label">Ubicación</label>
+                        <input type="text" th:field="*{ubicacion}" id="ubicacion" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="dimensiones" class="form-label">Dimensiones</label>
+                        <input type="text" th:field="*{dimensiones}" id="dimensiones" class="form-control" required>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-between mt-4">
+                        <a th:href="@{/stands}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

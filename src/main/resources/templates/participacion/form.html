@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Participación</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1 th:text="${participacion.id == null} ? 'Nueva Participación' : 'Editar Participación'"></h1>
+    <form th:action="@{/participaciones/guardar}" th:object="${participacion}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <label>Usuario:</label>
+        <select th:field="*{usuario}" required>
+            <option th:each="u : ${usuarios}" th:value="${u}" th:text="${u.nombre}"></option>
+        </select><br>
+        <label>Evento:</label>
+        <select th:field="*{evento}" required>
+            <option th:each="e : ${eventos}" th:value="${e}" th:text="${e.nombre}"></option>
+        </select><br>
+        <label>Tipo de Participación:</label>
+        <input type="text" th:field="*{tipoParticipacion}" required /><br>
+        <button type="submit">Guardar</button>
+    </form>
+    <a th:href="@{/participaciones}">Volver</a>
+</body>
+</html>

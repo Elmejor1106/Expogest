@@ -1,0 +1,39 @@
+# Directorios de Maven
+target/
+!target/*.jar
+
+# Directorios IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Node modules (si hay frontend)
+node_modules/
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*~
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Documentación
+*.md
+!README.md

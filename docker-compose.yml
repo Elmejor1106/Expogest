@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Servicio de la aplicación Spring Boot
+  expogest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: expogest-app
+    ports:
+      - "8115:8115"
+    environment:
+      # Variables de entorno para Spring Boot
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://juandavidduranmalaver_db_user:Uts2025.@serverjuan.mdl6ggs.mongodb.net/expogest
+      - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=true
+      - SERVER_PORT=8115
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    restart: unless-stopped
+    networks:
+      - expogest-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8115/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  expogest-network:
+    driver: bridge
