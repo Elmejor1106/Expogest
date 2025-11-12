@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- Navbar Fragment -->
+    <nav th:fragment="navbar(rolTitulo, panelUrl)" class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(90deg, #FFD600 0%, #434343 100%);">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-4" th:href="${panelUrl}">
+                <i class="bi bi-award-fill me-2"></i>ExpoGest - <span th:text="${rolTitulo}"></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="${panelUrl}">
+                            <i class="bi bi-house-door-fill"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Estilos globales -->
+    <div th:fragment="styles">
+        <style>
+            body {
+                min-height: 100vh;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .navbar {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            .navbar-brand {
+                letter-spacing: 1px;
+            }
+            .card {
+                border: none;
+                border-radius: 16px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                background: white;
+            }
+            .card-header {
+                background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+                color: white;
+                border-radius: 16px 16px 0 0 !important;
+                padding: 1.5rem;
+                font-weight: 600;
+            }
+            .btn-primary {
+                background: linear-gradient(90deg, #FFD600 0%, #FFA000 100%);
+                border: none;
+                font-weight: 500;
+                padding: 0.6rem 1.5rem;
+                border-radius: 8px;
+                transition: all 0.3s;
+            }
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 214, 0, 0.4);
+            }
+            .btn-secondary {
+                background: linear-gradient(90deg, #434343 0%, #2c2c2c 100%);
+                border: none;
+                font-weight: 500;
+                padding: 0.6rem 1.5rem;
+                border-radius: 8px;
+            }
+            .btn-outline-primary {
+                border: 2px solid #FFD600;
+                color: #434343;
+                font-weight: 500;
+                border-radius: 8px;
+            }
+            .btn-outline-primary:hover {
+                background: #FFD600;
+                color: #434343;
+            }
+            .table {
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            .table thead {
+                background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+                color: white;
+            }
+            footer {
+                background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+                color: white;
+                padding: 1rem;
+                margin-top: auto;
+            }
+        </style>
+    </div>
+</body>
+</html>

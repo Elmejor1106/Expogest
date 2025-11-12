@@ -1,0 +1,236 @@
+# 🎪 ExpoGest - Sistema de Gestión de Eventos
+
+Sistema completo de gestión de eventos, stands y exposiciones construido con Spring Boot y MongoDB.
+
+## 🚀 Características
+
+- ✅ **Gestión de Usuarios** - 5 roles: Administrador, Organizador, Expositor, Visitante, Evaluador
+- ✅ **Gestión de Eventos** - Crear, editar y administrar eventos
+- ✅ **Gestión de Stands** - Control completo de stands con estados (Disponible, Reservado, Ocupado, Mantenimiento)
+- ✅ **Solicitudes de Stands** - Los expositores pueden solicitar stands
+- ✅ **Evaluaciones** - Sistema de evaluación de stands
+- ✅ **Panel de Control** - Interfaz personalizada para cada rol
+- ✅ **Diseño Moderno** - UI profesional con colores amarillo (#FFD600) y gris (#434343)
+
+## 🛠️ Tecnologías
+
+- **Backend:** Spring Boot 3.5.7
+- **Base de Datos:** MongoDB Atlas
+- **Frontend:** Thymeleaf + Bootstrap 5.3.2
+- **Java:** 21 (producción) / 25 (desarrollo)
+- **Build Tool:** Maven
+
+## 📦 Instalación Local
+
+### Requisitos Previos
+- Java 21 o superior
+- Maven 3.9+
+- MongoDB Atlas (o MongoDB local)
+
+### Pasos
+
+1. Clonar el repositorio
+```bash
+git clone https://github.com/TU_USUARIO/expogest.git
+cd expogest
+```
+
+2. Configurar la base de datos
+   - Editar `src/main/resources/application.properties`
+   - Actualizar la URI de MongoDB con tus credenciales
+
+3. Compilar y ejecutar
+```bash
+./mvnw spring-boot:run
+```
+
+4. Abrir en el navegador
+```
+http://localhost:8115
+```
+
+### Credenciales por Defecto
+- **Usuario:** admin@expogest.com
+- **Contraseña:** admin123
+
+## 🌐 Despliegue en Render
+
+### Preparación Completada ✅
+Este proyecto ya está configurado para desplegarse en Render con los siguientes archivos:
+- `render.yaml` - Configuración del servicio
+- `system.properties` - Versión de Java
+- `Procfile` - Comando de inicio
+- `application-prod.properties` - Configuración de producción
+
+### Pasos para Desplegar
+
+1. **Subir a GitHub**
+```bash
+git init
+git add .
+git commit -m "Initial commit - ExpoGest"
+git branch -M main
+git remote add origin https://github.com/TU_USUARIO/expogest.git
+git push -u origin main
+```
+
+2. **Crear Servicio en Render**
+   - Ve a [render.com](https://render.com)
+   - Clic en "New +" → "Web Service"
+   - Conecta tu repositorio
+   - Render detectará automáticamente la configuración
+
+3. **Variables de Entorno en Render**
+   - `MONGODB_URI`: Tu URI de MongoDB Atlas
+   - `SPRING_PROFILES_ACTIVE`: prod
+   - `JAVA_VERSION`: 21
+
+4. **Configuración de MongoDB Atlas**
+   - Network Access → Allow Access from Anywhere (0.0.0.0/0)
+
+Ver `RENDER_DEPLOYMENT.md` para instrucciones detalladas.
+
+## 📁 Estructura del Proyecto
+
+```
+expogest/
+├── src/
+│   ├── main/
+│   │   ├── java/com/expogest/expogest/
+│   │   │   ├── controller/      # Controladores REST
+│   │   │   ├── model/           # Modelos/Entidades
+│   │   │   ├── repository/      # Repositorios MongoDB
+│   │   │   ├── service/         # Lógica de negocio
+│   │   │   └── ExpogestApplication.java
+│   │   └── resources/
+│   │       ├── templates/       # Vistas Thymeleaf
+│   │       │   ├── admin/
+│   │       │   ├── organizador/
+│   │       │   ├── expositor/
+│   │       │   ├── visitante/
+│   │       │   ├── evaluador/
+│   │       │   ├── evento/
+│   │       │   └── fragments/   # Componentes reutilizables
+│   │       ├── application.properties
+│   │       └── application-prod.properties
+│   └── test/
+├── target/                      # Archivos compilados (ignorados por Git)
+├── .gitignore
+├── pom.xml                      # Dependencias Maven
+├── render.yaml                  # Configuración Render
+├── system.properties            # Java version
+├── Procfile                     # Comando de inicio
+└── README.md
+
+```
+
+## 👥 Roles y Permisos
+
+### 🔧 Administrador
+- Gestión completa de usuarios
+- Acceso a todas las funcionalidades
+
+### 📋 Organizador
+- Gestión de eventos
+- Gestión de stands
+- Cronogramas
+- Revisión de solicitudes
+
+### 🏢 Expositor
+- Solicitar stands
+- Ver mis solicitudes
+- Ver eventos disponibles
+
+### 👤 Visitante
+- Inscribirse a eventos
+- Ver eventos activos
+
+### ⭐ Evaluador
+- Evaluar stands
+- Ver eventos
+
+## 🎨 Diseño
+
+El sistema utiliza un esquema de colores profesional:
+- **Primario:** Amarillo #FFD600
+- **Secundario:** Gris #434343
+- **Componentes:** Bootstrap 5.3.2 con personalización
+- **Íconos:** Bootstrap Icons 1.11.1
+
+## 📝 Endpoints Principales
+
+### Autenticación
+- `GET /login` - Página de login
+- `POST /login` - Procesar login
+- `GET /registro` - Página de registro
+- `GET /logout` - Cerrar sesión
+
+### Administrador
+- `GET /admin/panelAdmin` - Panel de administrador
+- `GET /admin/usuarios` - Lista de usuarios
+- `GET /admin/usuarios/nuevo` - Crear usuario
+
+### Organizador
+- `GET /organizador/panelOrganizador` - Panel organizador
+- `GET /stands` - Lista de stands
+- `GET /eventos` - Lista de eventos
+
+### Eventos
+- `GET /eventos` - Listar eventos
+- `GET /eventos/nuevo` - Crear evento
+- `POST /eventos/guardar` - Guardar evento
+
+### Stands
+- `GET /stands` - Listar stands
+- `GET /stands/nuevo` - Crear stand
+- `POST /stands/guardar` - Guardar stand
+
+## 🔒 Seguridad
+
+- Validación de roles en el backend
+- Sesiones seguras
+- Validación de formularios
+- Protección de endpoints por rol
+
+## 📊 Base de Datos
+
+### Colecciones MongoDB
+- `usuarios` - Información de usuarios
+- `eventos` - Eventos del sistema
+- `stands` - Stands disponibles
+- `solicitudes` - Solicitudes de stands
+- `evaluaciones` - Evaluaciones realizadas
+- `cronogramas` - Cronogramas de eventos
+- `participaciones` - Participaciones en eventos
+
+## 🐛 Solución de Problemas
+
+### Error: "Cannot connect to MongoDB"
+- Verifica la URI de MongoDB en `application.properties`
+- Asegúrate de que tu IP esté permitida en MongoDB Atlas
+
+### Error: "Port 8115 already in use"
+- Cambia el puerto en `application.properties`: `server.port=XXXX`
+
+### Error en Render: "Build failed"
+- Verifica que Java 21 esté configurado
+- Revisa los logs de build en el dashboard de Render
+
+## 📞 Soporte
+
+Para reportar problemas o solicitar características:
+- Crea un issue en GitHub
+- Contacta al equipo de desarrollo
+
+## 📄 Licencia
+
+Este proyecto es de uso académico para la materia de Desarrollo de Aplicaciones Empresariales.
+
+## 👨‍💻 Autor
+
+Desarrollado por [Tu Nombre] - [Tu Universidad]
+
+---
+
+**Versión:** 0.0.1-SNAPSHOT  
+**Fecha:** Noviembre 2025

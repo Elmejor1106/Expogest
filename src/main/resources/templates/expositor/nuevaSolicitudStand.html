@@ -2,99 +2,122 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${solicitud.id == null} ? 'Nueva Solicitud de Stand' : 'Editar Solicitud de Stand'">Nueva Solicitud de Stand</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS -->
+    <title>Nueva Solicitud de Stand</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg,#a1a6bb 0%, #764ba2 100%);
-            min-height: 100vh;
+        .evento-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
-        .card {
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
-            background: rgba(255,255,255,0.97);
-            border: none;
-        }
-        .card-header {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: #fff;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-        }
-        .form-label {
-            font-weight: 500;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            border: none;
-        }
-        .btn-success:hover {
-            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
-        }
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            color: #fff;
-            font-size: 2rem;
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.12);
+        .evento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
     </style>
 </head>
-<body>
-    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-        <div class="col-md-7 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header py-4">
-                    <div class="icon-circle mb-2">
-                        <i class="bi bi-shop"></i>
-                    </div>
-                    <h2 class="mb-0" th:text="${solicitud.id == null} ? 'Nueva Solicitud de Stand' : 'Editar Solicitud de Stand'"></h2>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-calendar-check"></i> Seleccione un Evento</h2>
+        <a th:href="@{/expositor/panelExpositor}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <!-- Instrucciones -->
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>¿Cómo solicitar un stand?</strong>
+        <ol class="mb-0 mt-2">
+            <li>Seleccione el evento en el que desea participar</li>
+            <li>Elija un stand disponible del evento</li>
+            <li>Complete la descripción de su empresa/producto</li>
+            <li>Envíe su solicitud y espere la aprobación del organizador</li>
+        </ol>
+    </div>
+
+    <!-- Eventos Activos -->
+    <h4 class="mb-3">Eventos Activos Disponibles</h4>
+
+    <div th:if="${eventos.empty}" class="text-center py-5">
+        <i class="bi bi-calendar-x" style="font-size: 5rem; color: #ccc;"></i>
+        <h3 class="mt-3 text-muted">No hay eventos activos</h3>
+        <p class="text-muted">Por el momento no hay eventos disponibles para solicitar stands</p>
+        <a th:href="@{/expositor/panelExpositor}" class="btn btn-primary mt-3">
+            <i class="bi bi-house"></i> Volver al Panel
+        </a>
+    </div>
+
+    <div class="row">
+        <div th:each="evento : ${eventos}" class="col-md-6 col-lg-4 mb-4">
+            <div class="card evento-card h-100 shadow" 
+                 onclick="location.href='/solicitudes/nueva/' + '[[${evento.id}]]'">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-event"></i>
+                        <span th:text="${evento.nombre}"></span>
+                    </h5>
                 </div>
-                <div class="card-body p-4">
-                    <form th:action="@{/expositor/solicitudes/guardar}" th:object="${solicitud}" method="post" autocomplete="off">
-                        <input type="hidden" th:field="*{id}" />
-                        <div class="mb-3">
-                            <label class="form-label">Expositor:</label>
-                            <select th:field="*{expositor.id}" class="form-select" required>
-                                <option value="" disabled selected>Seleccione un expositor</option>
-                                <option th:each="u : ${expositores}" th:value="${u.id}" th:text="${u.nombre}"></option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stand:</label>
-                            <select th:field="*{stand.id}" class="form-select" required>
-                                <option value="" disabled selected>Seleccione un stand</option>
-                                <option th:each="s : ${stands}" th:value="${s.id}" th:text="${s.nombre}"></option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción:</label>
-                            <input type="text" th:field="*{descripcion}" class="form-control" placeholder="Describe tu solicitud" required />
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-check-circle me-2"></i>Guardar
-                            </button>
-                            <a th:href="@{/expositor/solicitudes}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left-circle me-2"></i>Volver
-                            </a>
-                        </div>
-                    </form>
+                <div class="card-body">
+                    <!-- Descripción -->
+                    <p class="card-text" th:text="${evento.descripcion}"></p>
+
+                    <!-- Fechas -->
+                    <div class="mb-2">
+                        <i class="bi bi-calendar-range text-primary"></i>
+                        <strong>Fechas:</strong><br>
+                        <small>
+                            <span th:text="${#temporals.format(evento.fechaInicio, 'dd/MM/yyyy')}"></span> - 
+                            <span th:text="${#temporals.format(evento.fechaFin, 'dd/MM/yyyy')}"></span>
+                        </small>
+                    </div>
+
+                    <!-- Lugar -->
+                    <div class="mb-2">
+                        <i class="bi bi-geo-alt text-danger"></i>
+                        <strong>Lugar:</strong>
+                        <span th:text="${evento.lugar}"></span>
+                    </div>
+
+                    <!-- Capacidad -->
+                    <div class="mb-2">
+                        <i class="bi bi-shop text-success"></i>
+                        <strong>Capacidad:</strong>
+                        <span th:text="${evento.capacidadMaxima}"></span> stands
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="mt-3">
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle"></i> Activo
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <a th:href="@{/solicitudes/nueva/{id}(id=${evento.id})}" class="btn btn-primary w-100">
+                        <i class="bi bi-send"></i> Solicitar Stand
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Información adicional -->
+    <div class="alert alert-warning mt-4">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>Importante:</strong>
+        <ul class="mb-0 mt-2">
+            <li>Solo puede solicitar <strong>un stand por evento</strong></li>
+            <li>Su solicitud estará <strong>pendiente de aprobación</strong> por el organizador</li>
+            <li>Recibirá notificación cuando su solicitud sea aprobada o rechazada</li>
+            <li>Puede cancelar solicitudes pendientes desde "Mis Solicitudes"</li>
+        </ul>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

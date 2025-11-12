@@ -49,19 +49,19 @@ public class UsuarioController {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuario != null && contrasena.equals(usuario.getContrasena())) {
             // Redirección según rol (enum)
-            switch (usuario.getRol()) {
-                case ADMINISTRADOR:
-                    return "redirect:/admin/panelAdmin";
-                case ORGANIZADOR:
-                    return "redirect:/organizador/panelOrganizador";
-                case EXPOSITOR:
-                    return "redirect:/expositor/panelExpositor";
-                case VISITANTE:
-                    return "redirect:/visitante/panelVisitante";
-                case EVALUADOR:
-                    return "redirect:/evaluador/panelEvaluador";
-                default:
-                    return "redirect:/";
+            Usuario.Rol rol = usuario.getRol();
+            if (rol == Usuario.Rol.ADMINISTRADOR) {
+                return "redirect:/admin/panelAdmin";
+            } else if (rol == Usuario.Rol.ORGANIZADOR) {
+                return "redirect:/organizador/panelOrganizador";
+            } else if (rol == Usuario.Rol.EXPOSITOR) {
+                return "redirect:/expositor/panelExpositor";
+            } else if (rol == Usuario.Rol.VISITANTE) {
+                return "redirect:/visitante/panelVisitante";
+            } else if (rol == Usuario.Rol.EVALUADOR) {
+                return "redirect:/evaluador/panelEvaluador";
+            } else {
+                return "redirect:/";
             }
         } else {
             model.addAttribute("error", "Credenciales incorrectas");
@@ -72,6 +72,13 @@ public class UsuarioController {
     @GetMapping("/")
     public String inicio() {
         return "index";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        // En una implementación real, aquí se invalidaría la sesión
+        // HttpSession.invalidate()
+        return "redirect:/login";
     }
 
 }

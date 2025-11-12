@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitudes por Evento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-funnel"></i> Solicitudes por Evento</h2>
+        <div>
+            <a th:href="@{/solicitudes}" class="btn btn-outline-secondary me-2">
+                <i class="bi bi-list"></i> Todas las Solicitudes
+            </a>
+            <a th:href="@{/panelOrganizador}" class="btn btn-outline-primary">
+                <i class="bi bi-house"></i> Panel Organizador
+            </a>
+        </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show'" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Información del Evento -->
+    <div th:if="${evento}" class="card mb-4 shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-calendar-event"></i> Información del Evento</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 th:text="${evento.nombre}"></h5>
+                    <p class="text-muted mb-0" th:text="${evento.descripcion}"></p>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1">
+                        <strong><i class="bi bi-geo-alt"></i> Lugar:</strong> 
+                        <span th:text="${evento.lugar}"></span>
+                    </p>
+                    <p class="mb-1">
+                        <strong><i class="bi bi-calendar-range"></i> Fechas:</strong><br>
+                        <span th:text="${evento.fechaInicio}"></span> - 
+                        <span th:text="${evento.fechaFin}"></span>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1">
+                        <strong><i class="bi bi-info-circle"></i> Estado:</strong>
+                        <span th:switch="${evento.estado.toString()}">
+                            <span th:case="'ACTIVO'" class="badge bg-success">Activo</span>
+                            <span th:case="'PLANIFICACION'" class="badge bg-warning">Planificación</span>
+                            <span th:case="'FINALIZADO'" class="badge bg-secondary">Finalizado</span>
+                            <span th:case="'CANCELADO'" class="badge bg-danger">Cancelado</span>
+                        </span>
+                    </p>
+                    <p class="mb-0">
+                        <strong><i class="bi bi-shop"></i> Capacidad:</strong> 
+                        <span th:text="${evento.capacidadMaxima}"></span> stands
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas de Solicitudes -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Solicitudes</h6>
+                    <h2 class="text-primary" th:text="${solicitudes.size()}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Pendientes</h6>
+                    <h2 class="text-warning" th:text="${#lists.size(#lists.toList(solicitudes.?[estado.toString() == 'PENDIENTE']))}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Aprobadas</h6>
+                    <h2 class="text-success" th:text="${#lists.size(#lists.toList(solicitudes.?[estado.toString() == 'APROBADA']))}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Rechazadas</h6>
+                    <h2 class="text-danger" th:text="${#lists.size(#lists.toList(solicitudes.?[estado.toString() == 'RECHAZADA']))}">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtro Rápido por Estado -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="filtroEstado" id="filtroTodas" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="filtroTodas" onclick="filtrarPorEstado('TODAS')">
+                    <i class="bi bi-list"></i> Todas
+                </label>
+
+                <input type="radio" class="btn-check" name="filtroEstado" id="filtroPendientes" autocomplete="off">
+                <label class="btn btn-outline-warning" for="filtroPendientes" onclick="filtrarPorEstado('PENDIENTE')">
+                    <i class="bi bi-clock"></i> Pendientes
+                </label>
+
+                <input type="radio" class="btn-check" name="filtroEstado" id="filtroAprobadas" autocomplete="off">
+                <label class="btn btn-outline-success" for="filtroAprobadas" onclick="filtrarPorEstado('APROBADA')">
+                    <i class="bi bi-check-circle"></i> Aprobadas
+                </label>
+
+                <input type="radio" class="btn-check" name="filtroEstado" id="filtroRechazadas" autocomplete="off">
+                <label class="btn btn-outline-danger" for="filtroRechazadas" onclick="filtrarPorEstado('RECHAZADA')">
+                    <i class="bi bi-x-circle"></i> Rechazadas
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Solicitudes -->
+    <div th:if="${solicitudes.empty}" class="text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 5rem; color: #ccc;"></i>
+        <h3 class="mt-3 text-muted">No hay solicitudes para este evento</h3>
+        <p class="text-muted">Aún no se han recibido solicitudes de stand</p>
+    </div>
+
+    <div class="card shadow" th:unless="${solicitudes.empty}">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Lista de Solicitudes</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tablaSolicitudes">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Expositor</th>
+                            <th>Stand</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Respuesta</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="solicitud : ${solicitudes}" th:attr="data-estado=${solicitud.estado.toString()}">
+                            <td th:text="${#temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td><small th:text="${solicitud.expositorId}"></small></td>
+                            <td><small th:text="${solicitud.standId}"></small></td>
+                            <td>
+                                <span th:text="${#strings.abbreviate(solicitud.descripcion, 40)}"></span>
+                                <button type="button" class="btn btn-sm btn-link p-0" 
+                                        data-bs-toggle="popover" 
+                                        th:attr="data-bs-content=${solicitud.descripcion}"
+                                        title="Descripción completa">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <span th:switch="${solicitud.estado.toString()}">
+                                    <span th:case="'PENDIENTE'" class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock"></i> Pendiente
+                                    </span>
+                                    <span th:case="'APROBADA'" class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Aprobada
+                                    </span>
+                                    <span th:case="'RECHAZADA'" class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Rechazada
+                                    </span>
+                                    <span th:case="'CANCELADA'" class="badge bg-secondary">
+                                        <i class="bi bi-dash-circle"></i> Cancelada
+                                    </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:if="${solicitud.fechaRespuesta}" 
+                                      th:text="${#temporals.format(solicitud.fechaRespuesta, 'dd/MM/yyyy HH:mm')}"></span>
+                                <span th:unless="${solicitud.fechaRespuesta}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <!-- Aprobar -->
+                                    <form th:if="${solicitud.estado.toString() == 'PENDIENTE'}" 
+                                          th:action="@{/solicitudes/{id}/aprobar(id=${solicitud.id})}" 
+                                          method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-success" 
+                                                onclick="return confirm('¿Aprobar esta solicitud?')">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- Rechazar -->
+                                    <button th:if="${solicitud.estado.toString() == 'PENDIENTE'}" 
+                                            type="button" class="btn btn-sm btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            th:data-bs-target="'#rechazarModal' + ${solicitud.id}">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+
+                                    <!-- Ver motivo -->
+                                    <button th:if="${solicitud.estado.toString() == 'RECHAZADA' and solicitud.motivoRechazo}" 
+                                            type="button" class="btn btn-sm btn-info" 
+                                            data-bs-toggle="popover"
+                                            title="Motivo del rechazo"
+                                            th:attr="data-bs-content=${solicitud.motivoRechazo}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Modal Rechazar -->
+                                <div th:if="${solicitud.estado.toString() == 'PENDIENTE'}" 
+                                     class="modal fade" 
+                                     th:id="'rechazarModal' + ${solicitud.id}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form th:action="@{/solicitudes/{id}/rechazar(id=${solicitud.id})}" method="post">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Rechazar Solicitud</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <textarea name="motivo" class="form-control" rows="3" required
+                                                              placeholder="Motivo del rechazo"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-danger">Rechazar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Activar popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+
+    // Filtrar por estado
+    function filtrarPorEstado(estado) {
+        const filas = document.querySelectorAll('#tablaSolicitudes tbody tr');
+        filas.forEach(fila => {
+            const estadoFila = fila.getAttribute('data-estado');
+            if (estado === 'TODAS' || estadoFila === estado) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

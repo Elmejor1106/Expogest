@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Todas las Solicitudes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-clipboard-check"></i> Gestión de Solicitudes de Stand</h2>
+        <a th:href="@{/panelOrganizador}" class="btn btn-outline-primary">
+            <i class="bi bi-house"></i> Panel Organizador
+        </a>
+    </div>
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show'" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filtros</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <a th:href="@{/solicitudes}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-list"></i> Todas las Solicitudes
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a th:href="@{/solicitudes/pendientes}" class="btn btn-outline-warning w-100 mb-2">
+                        <i class="bi bi-clock"></i> Solo Pendientes
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" onchange="if(this.value) window.location.href='/solicitudes/evento/'+this.value">
+                        <option value="">Filtrar por Evento</option>
+                        <option th:each="evento : ${eventos}" th:value="${evento.id}" th:text="${evento.nombre}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Total</h5>
+                    <h2 th:text="${solicitudes.size()}"></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">Pendientes</h5>
+                    <h2 th:text="${#lists.size(#lists.toList(solicitudes.?[estado.toString() == 'PENDIENTE']))}"></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Aprobadas</h5>
+                    <h2 th:text="${#lists.size(#lists.toList(solicitudes.?[estado.toString() == 'APROBADA']))}"></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Rechazadas</h5>
+                    <h2 th:text="${#lists.size(#lists.toList(solicitudes.?[estado.toString() == 'RECHAZADA']))}"></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Solicitudes -->
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Lista de Solicitudes</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha Solicitud</th>
+                            <th>Expositor</th>
+                            <th>Evento</th>
+                            <th>Stand</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Fecha Respuesta</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${solicitudes.empty}">
+                            <td colspan="8" class="text-center text-muted">
+                                <i class="bi bi-inbox"></i> No hay solicitudes registradas
+                            </td>
+                        </tr>
+                        <tr th:each="solicitud : ${solicitudes}">
+                            <td th:text="${#temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <small class="text-muted" th:text="${solicitud.expositorId}"></small>
+                            </td>
+                            <td>
+                                <small th:text="${solicitud.eventoId}"></small>
+                            </td>
+                            <td>
+                                <small th:text="${solicitud.standId}"></small>
+                            </td>
+                            <td>
+                                <span th:text="${#strings.abbreviate(solicitud.descripcion, 50)}"></span>
+                            </td>
+                            <td>
+                                <span th:switch="${solicitud.estado.toString()}">
+                                    <span th:case="'PENDIENTE'" class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock"></i> Pendiente
+                                    </span>
+                                    <span th:case="'APROBADA'" class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Aprobada
+                                    </span>
+                                    <span th:case="'RECHAZADA'" class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Rechazada
+                                    </span>
+                                    <span th:case="'CANCELADA'" class="badge bg-secondary">
+                                        <i class="bi bi-dash-circle"></i> Cancelada
+                                    </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:if="${solicitud.fechaRespuesta}" 
+                                      th:text="${#temporals.format(solicitud.fechaRespuesta, 'dd/MM/yyyy HH:mm')}"></span>
+                                <span th:unless="${solicitud.fechaRespuesta}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <!-- Aprobar (solo PENDIENTE) -->
+                                    <form th:if="${solicitud.estado.toString() == 'PENDIENTE'}" 
+                                          th:action="@{/solicitudes/{id}/aprobar(id=${solicitud.id})}" 
+                                          method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-success" 
+                                                onclick="return confirm('¿Aprobar esta solicitud?')">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- Rechazar (solo PENDIENTE) -->
+                                    <button th:if="${solicitud.estado.toString() == 'PENDIENTE'}" 
+                                            type="button" class="btn btn-sm btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            th:data-bs-target="'#rechazarModal' + ${solicitud.id}">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                    
+                                    <!-- Ver motivo rechazo -->
+                                    <button th:if="${solicitud.estado.toString() == 'RECHAZADA'}" 
+                                            type="button" class="btn btn-sm btn-info" 
+                                            data-bs-toggle="tooltip"
+                                            th:title="${solicitud.motivoRechazo}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Modal Rechazar -->
+                                <div th:if="${solicitud.estado.toString() == 'PENDIENTE'}" 
+                                     class="modal fade" 
+                                     th:id="'rechazarModal' + ${solicitud.id}" 
+                                     tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form th:action="@{/solicitudes/{id}/rechazar(id=${solicitud.id})}" method="post">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Rechazar Solicitud</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="motivo" class="form-label">Motivo del rechazo <span class="text-danger">*</span></label>
+                                                        <textarea name="motivo" class="form-control" rows="3" required
+                                                                  placeholder="Explique por qué se rechaza la solicitud"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-danger">Rechazar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Activar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+</body>
+</html>

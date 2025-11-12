@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Solicitud de Stand</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show'" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Información del Evento -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-calendar-event"></i> Solicitud de Stand</h4>
+        </div>
+        <div class="card-body">
+            <div class="row" th:if="${evento}">
+                <div class="col-md-6">
+                    <p><strong>Evento:</strong> <span th:text="${evento.nombre}"></span></p>
+                    <p><strong>Lugar:</strong> <span th:text="${evento.lugar}"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Fechas:</strong> 
+                        <span th:text="${evento.fechaInicio}"></span> al 
+                        <span th:text="${evento.fechaFin}"></span>
+                    </p>
+                    <p><strong>Estado:</strong> 
+                        <span th:switch="${evento.estado.toString()}">
+                            <span th:case="'ACTIVO'" class="badge bg-success">Activo</span>
+                            <span th:case="*" class="badge bg-secondary" th:text="${evento.estado}"></span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Solicitud -->
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Información de la Solicitud</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/solicitudes/guardar}" th:object="${solicitud}" method="post">
+                <input type="hidden" th:field="*{eventoId}" />
+
+                <div class="mb-3">
+                    <label for="standId" class="form-label">Seleccione un Stand <span class="text-danger">*</span></label>
+                    <select th:field="*{standId}" id="standId" class="form-select" required>
+                        <option value="">-- Seleccione un stand --</option>
+                        <option th:each="stand : ${standsDisponibles}" 
+                                th:value="${stand.id}" 
+                                th:text="${stand.numero + ' - ' + stand.nombre + ' (' + stand.ubicacion + ')'}">
+                        </option>
+                    </select>
+                    <small class="form-text text-muted">
+                        Solo se muestran stands disponibles o reservados del evento
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción de su Empresa/Producto <span class="text-danger">*</span></label>
+                    <textarea th:field="*{descripcion}" id="descripcion" class="form-control" rows="4" required
+                              placeholder="Describa brevemente su empresa, productos o servicios que presentará en el stand"></textarea>
+                    <small class="form-text text-muted">
+                        Esta información será revisada por los organizadores
+                    </small>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Importante:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Solo puede solicitar un stand por evento</li>
+                        <li>La solicitud estará pendiente de aprobación</li>
+                        <li>Recibirá notificación cuando sea aprobada o rechazada</li>
+                        <li>Una vez aprobada, el stand quedará asignado a su empresa</li>
+                    </ul>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a th:href="@{/eventos}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver a Eventos
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Enviar Solicitud
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -4,67 +4,175 @@
     <meta charset="UTF-8">
     <title>Gestión de Stands</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+    <style>
+        .stats-card {
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .badge-custom {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">Gestión de Stands</h2>
-        </div>
-        <div class="card-body">
-            <div class="mb-3 d-flex justify-content-between">
-                <a th:href="@{/organizador/panelOrganizador}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
-                </a>
-                <a th:href="@{/stands/nuevo}" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Nuevo Stand
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar :: navbar('Organizador', '/organizador/panelOrganizador')}"></div>
+
+<div class="container py-4">
+    <!-- Mensajes de alerta -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show shadow-sm'" role="alert" style="border-radius: 12px;">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Header Card -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0"><i class="bi bi-grid-3x3-gap me-2"></i>Gestión de Stands</h2>
+                <a th:href="@{/stands/nuevo}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Nuevo Stand
                 </a>
             </div>
+        </div>
+    </div>
 
+    <!-- Tabla de Stands -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered align-middle">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle">
+                    <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Ubicación</th>
-                            <th>Dimensiones</th>
-                            <th>Acciones</th>
+                            <th><i class="bi bi-hash me-1"></i>Número</th>
+                            <th><i class="bi bi-tag me-1"></i>Nombre</th>
+                            <th><i class="bi bi-geo-alt me-1"></i>Ubicación</th>
+                            <th><i class="bi bi-rulers me-1"></i>Dimensiones</th>
+                            <th><i class="bi bi-currency-dollar me-1"></i>Precio</th>
+                            <th class="text-center"><i class="bi bi-check-circle me-1"></i>Estado</th>
+                            <th class="text-center"><i class="bi bi-calendar-event me-1"></i>Evento</th>
+                            <th class="text-center"><i class="bi bi-person me-1"></i>Expositor</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="stand : ${stands}">
-                            <td th:text="${stand.id}"></td>
+                            <td><strong class="text-primary" th:text="${stand.numero}"></strong></td>
                             <td th:text="${stand.nombre}"></td>
-                            <td th:text="${stand.ubicacion}"></td>
-                            <td th:text="${stand.dimensiones}"></td>
-                            <td>
-                                <a th:href="@{/stands/editar/{id}(id=${stand.id})}" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-pencil-square"></i> Editar
-                                </a>
-                                <a th:href="@{/stands/eliminar/{id}(id=${stand.id})}" 
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('¿Seguro que deseas eliminar este stand?');">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </a>
+                            <td><small class="text-muted" th:text="${stand.ubicacion}"></small></td>
+                            <td class="text-center"><span class="badge bg-light text-dark" th:text="${stand.dimensiones}"></span></td>
+                            <td class="text-end"><strong th:text="${stand.precio != null ? '$' + stand.precio : 'N/A'}"></strong></td>
+                            <td class="text-center">
+                                <span th:switch="${stand.estado.toString()}" class="badge-custom">
+                                    <span th:case="'DISPONIBLE'" class="badge bg-success">✓ Disponible</span>
+                                    <span th:case="'RESERVADO'" class="badge" style="background: #FFD600; color: #434343;">⏳ Reservado</span>
+                                    <span th:case="'OCUPADO'" class="badge bg-info">👤 Ocupado</span>
+                                    <span th:case="'MANTENIMIENTO'" class="badge bg-secondary">🔧 Mantenimiento</span>
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span th:if="${stand.eventoId != null}" class="badge bg-primary" th:text="${stand.eventoId}"></span>
+                                <span th:if="${stand.eventoId == null}" class="text-muted"><small>Sin asignar</small></span>
+                            </td>
+                            <td class="text-center">
+                                <span th:if="${stand.expositorId != null}" class="badge bg-info" th:text="${stand.expositorId}"></span>
+                                <span th:if="${stand.expositorId == null}" class="text-muted"><small>Sin asignar</small></span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a th:href="@{/stands/editar/{id}(id=${stand.id})}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a th:href="@{/stands/eliminar/{id}(id=${stand.id})}" 
+                                       class="btn btn-outline-danger"
+                                       title="Eliminar"
+                                       onclick="return confirm('¿Seguro que deseas eliminar este stand?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                                <form th:if="${stand.expositorId != null}" 
+                                      th:action="@{/stands/{id}/liberar(id=${stand.id})}" 
+                                      method="post" class="d-inline-block ms-1">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                            title="Liberar stand"
+                                            onclick="return confirm('¿Liberar este stand?');">
+                                        <i class="bi bi-unlock"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(stands)}">
-                            <td colspan="5" class="text-center text-muted">No hay stands registrados.</td>
+                            <td colspan="9" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                                    <p class="lead">No hay stands registrados</p>
+                                    <a th:href="@{/stands/nuevo}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>Crear el primero
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
+    <!-- Estadísticas -->
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card stats-card border-0 shadow-sm" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="card-body text-white text-center p-4">
+                    <i class="bi bi-check-circle-fill display-4 mb-2"></i>
+                    <h5 class="mb-2">Disponibles</h5>
+                    <h2 class="mb-0 fw-bold" th:text="${#lists.size(stands.?[estado.toString() == 'DISPONIBLE'])}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card border-0 shadow-sm" style="background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);">
+                <div class="card-body text-center p-4" style="color: #434343;">
+                    <i class="bi bi-hourglass-split display-4 mb-2"></i>
+                    <h5 class="mb-2">Reservados</h5>
+                    <h2 class="mb-0 fw-bold" th:text="${#lists.size(stands.?[estado.toString() == 'RESERVADO'])}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card border-0 shadow-sm" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                <div class="card-body text-white text-center p-4">
+                    <i class="bi bi-person-check-fill display-4 mb-2"></i>
+                    <h5 class="mb-2">Ocupados</h5>
+                    <h2 class="mb-0 fw-bold" th:text="${#lists.size(stands.?[estado.toString() == 'OCUPADO'])}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card border-0 shadow-sm" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                <div class="card-body text-white text-center p-4">
+                    <i class="bi bi-tools display-4 mb-2"></i>
+                    <h5 class="mb-2">Mantenimiento</h5>
+                    <h2 class="mb-0 fw-bold" th:text="${#lists.size(stands.?[estado.toString() == 'MANTENIMIENTO'])}">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Bootstrap JS -->
+<footer class="text-center text-white mt-5">
+    <small>© 2025 ExpoGest. Todos los derechos reservados.</small>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

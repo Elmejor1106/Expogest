@@ -2,53 +2,129 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo/Editar Stand</title>
+    <title>Formulario Stand - ExpoGest</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Estilos globales -->
+    <div th:replace="~{fragments/navbar :: styles}"></div>
 </head>
-<body class="bg-light">
+<body>
 
-    <div class="container mt-5">
-        <div class="card shadow-lg">
-            <div class="card-header bg-primary text-white">
-                <h4 class="text-center mb-0" th:text="${stand.id == null} ? 'Nuevo Stand' : 'Editar Stand'"></h4>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/stands/guardar}" th:object="${stand}" method="post" class="row g-3">
-                    <input type="hidden" th:field="*{id}" />
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar :: navbar('Organizador', '/organizador/panelOrganizador')}"></div>
 
-                    <div class="col-md-12">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="ubicacion" class="form-label">Ubicación</label>
-                        <input type="text" th:field="*{ubicacion}" id="ubicacion" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="dimensiones" class="form-label">Dimensiones</label>
-                        <input type="text" th:field="*{dimensiones}" id="dimensiones" class="form-control" required>
-                    </div>
-
-                    <div class="col-12 d-flex justify-content-between mt-4">
-                        <a th:href="@{/stands}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Volver
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Guardar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+<div class="container mt-4 mb-5">
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show'" role="alert">
+        <i th:class="${tipo == 'success' ? 'bi bi-check-circle-fill' : 'bi bi-exclamation-triangle-fill'} + ' me-2'"></i>
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h2 class="mb-0">
+                <i class="bi bi-grid-3x3-gap me-2"></i>
+                <span th:text="${stand.id == null} ? 'Nuevo Stand' : 'Editar Stand'"></span>
+            </h2>
+        </div>
+        <div class="card-body p-4">
+            <form th:action="@{/stands/guardar}" th:object="${stand}" method="post" class="row g-3">
+                <input type="hidden" th:if="${stand.id != null}" th:field="*{id}" />
+
+                <div class="col-md-6">
+                    <label for="numero" class="form-label fw-bold">
+                        <i class="bi bi-hash me-1"></i>Número del Stand
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" th:field="*{numero}" id="numero" class="form-control" required 
+                           placeholder="Ej: ST-001">
+                    <small class="form-text text-muted">
+                        <i class="bi bi-info-circle me-1"></i>Identificador único del stand
+                    </small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="nombre" class="form-label fw-bold">
+                        <i class="bi bi-tag me-1"></i>Nombre
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required
+                           placeholder="Ej: Stand Premium A">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="ubicacion" class="form-label fw-bold">
+                        <i class="bi bi-geo-alt me-1"></i>Ubicación
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" th:field="*{ubicacion}" id="ubicacion" class="form-control" required
+                           placeholder="Ej: Pabellón 1 - Sección A">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="dimensiones" class="form-label fw-bold">
+                        <i class="bi bi-rulers me-1"></i>Dimensiones
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" th:field="*{dimensiones}" id="dimensiones" class="form-control" required
+                           placeholder="Ej: 3x3 metros">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="precio" class="form-label fw-bold">
+                        <i class="bi bi-currency-dollar me-1"></i>Precio
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" th:field="*{precio}" id="precio" class="form-control" 
+                               step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="estado" class="form-label fw-bold">
+                        <i class="bi bi-check-circle me-1"></i>Estado
+                        <span class="text-danger">*</span>
+                    </label>
+                    <select th:field="*{estado}" id="estado" class="form-select" required>
+                        <option value="">-- Seleccionar estado --</option>
+                        <option th:each="estado : ${estados}" 
+                                th:value="${estado}" 
+                                th:text="${estado}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <div class="alert" style="background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%); border: none;">
+                        <small style="color: #434343;">
+                            <i class="bi bi-lightbulb-fill me-1"></i>
+                            <strong>Nota:</strong> Los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                            El stand quedará disponible para ser asociado a eventos.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-between mt-4 pt-3 border-top">
+                    <a th:href="@{/stands}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle me-2"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-2"></i>Guardar Stand
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center text-white mt-5">
+    <small>© 2025 ExpoGest. Todos los derechos reservados.</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
