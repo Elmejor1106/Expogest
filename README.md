@@ -22,73 +22,63 @@ Sistema completo de gestión de eventos, stands y exposiciones construido con Sp
 
 ## 📦 Instalación Local
 
-### Requisitos Previos
-- Java 21 o superior
-- Maven 3.9+
-- MongoDB Atlas (o MongoDB local)
+### 🐳 Con Docker (Recomendado)
 
-### Pasos
+**Requisitos:** Solo Docker Desktop
 
-1. Clonar el repositorio
 ```bash
-git clone https://github.com/TU_USUARIO/expogest.git
+# Clonar el repositorio
+git clone https://github.com/Elmejor1106/Expogest.git
 cd expogest
+
+# Ejecutar con Docker Compose
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
 ```
 
-2. Configurar la base de datos
-   - Editar `src/main/resources/application.properties`
-   - Actualizar la URI de MongoDB con tus credenciales
+**¡Listo!** Abre: http://localhost:8080
 
-3. Compilar y ejecutar
+### ☕ Sin Docker (Desarrollo)
+
+**Requisitos:** Java 21, Maven 3.9+
+
 ```bash
+# Clonar el repositorio
+git clone https://github.com/Elmejor1106/Expogest.git
+cd expogest
+
+# Ejecutar
 ./mvnw spring-boot:run
 ```
 
-4. Abrir en el navegador
-```
-http://localhost:8115
-```
+Abre: http://localhost:8115
 
-### Credenciales por Defecto
+### 👤 Credenciales por Defecto
 - **Usuario:** admin@expogest.com
 - **Contraseña:** admin123
 
 ## 🌐 Despliegue en Render
 
-### Preparación Completada ✅
-Este proyecto ya está configurado para desplegarse en Render con los siguientes archivos:
-- `render.yaml` - Configuración del servicio
-- `system.properties` - Versión de Java
-- `Procfile` - Comando de inicio
-- `application-prod.properties` - Configuración de producción
+### 🐳 Con Docker (Super Simple)
 
-### Pasos para Desplegar
+1. **Tu código ya está en GitHub** ✅
 
-1. **Subir a GitHub**
-```bash
-git init
-git add .
-git commit -m "Initial commit - ExpoGest"
-git branch -M main
-git remote add origin https://github.com/TU_USUARIO/expogest.git
-git push -u origin main
-```
-
-2. **Crear Servicio en Render**
+2. **Crear servicio en Render**:
    - Ve a [render.com](https://render.com)
-   - Clic en "New +" → "Web Service"
-   - Conecta tu repositorio
-   - Render detectará automáticamente la configuración
+   - New + → Web Service
+   - Conecta tu repositorio `Elmejor1106/Expogest`
+   - **Environment**: Docker
+   - **Variables de entorno**:
+     - `MONGODB_URI`: mongodb+srv://...
+     - `SPRING_PROFILES_ACTIVE`: prod
 
-3. **Variables de Entorno en Render**
-   - `MONGODB_URI`: Tu URI de MongoDB Atlas
-   - `SPRING_PROFILES_ACTIVE`: prod
-   - `JAVA_VERSION`: 21
+3. **Deploy** → Render construye automáticamente con Docker
 
-4. **Configuración de MongoDB Atlas**
-   - Network Access → Allow Access from Anywhere (0.0.0.0/0)
+**¡Listo!** URL: https://tu-app.onrender.com
 
-Ver `RENDER_DEPLOYMENT.md` para instrucciones detalladas.
+Ver `DOCKER_README.md` para más detalles.
 
 ## 📁 Estructura del Proyecto
 
