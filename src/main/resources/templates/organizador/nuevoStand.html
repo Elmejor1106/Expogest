@@ -7,28 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <!-- Estilos globales -->
     <div th:replace="~{fragments/navbar :: styles}"></div>
-    
-    <style>
-        #map {
-            height: 400px;
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 1rem;
-        }
-        .coordenadas-info {
-            background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);
-            border-radius: 8px;
-            padding: 12px;
-            color: #434343;
-            font-weight: 500;
-        }
-    </style>
 </head>
 <body>
 
@@ -118,31 +98,6 @@
                     </select>
                 </div>
 
-                <!-- Mapa Interactivo -->
-                <div class="col-12 mt-3">
-                    <label class="form-label fw-bold">
-                        <i class="bi bi-map me-1"></i>Ubicación en el Mapa
-                        <span class="text-danger">*</span>
-                    </label>
-                    <p class="text-muted small mb-2">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Haz clic en el mapa para seleccionar la ubicación exacta del stand
-                    </p>
-                    
-                    <!-- Mapa -->
-                    <div id="map"></div>
-                    
-                    <!-- Coordenadas seleccionadas -->
-                    <div class="coordenadas-info">
-                        <i class="bi bi-geo-alt-fill me-2"></i>
-                        <span id="coordenadasTexto">Haz clic en el mapa para seleccionar una ubicación</span>
-                    </div>
-                    
-                    <!-- Campos ocultos para enviar coordenadas -->
-                    <input type="hidden" th:field="*{latitud}" id="latitud" required>
-                    <input type="hidden" th:field="*{longitud}" id="longitud" required>
-                </div>
-
                 <div class="col-12">
                     <div class="alert" style="background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%); border: none;">
                         <small style="color: #434343;">
@@ -170,144 +125,7 @@
     <small>© 2025 ExpoGest. Todos los derechos reservados.</small>
 </footer>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    // Inicializar el mapa centrado en una ubicación por defecto (Colombia)
-    const map = L.map('map').setView([4.6097, -74.0817], 13);
-    
-    // Agregar capa de OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-    }).addTo(map);
-    
-    // Variable para guardar el marcador
-    let marker = null;
-    
-    // Cargar coordenadas existentes si están disponibles
-    const latitudExistente = document.getElementById('latitud').value;
-    const longitudExistente = document.getElementById('longitud').value;
-    
-    if (latitudExistente && longitudExistente) {
-        const lat = parseFloat(latitudExistente);
-        const lng = parseFloat(longitudExistente);
-        
-        // Centrar mapa en coordenadas existentes
-        map.setView([lat, lng], 15);
-        
-        // Colocar marcador
-        marker = L.marker([lat, lng], {
-            draggable: true
-        }).addTo(map);
-        
-        // Actualizar texto de coordenadas
-        document.getElementById('coordenadasTexto').innerHTML = 
-            `<strong>Coordenadas seleccionadas:</strong> Latitud: ${lat.toFixed(6)}, Longitud: ${lng.toFixed(6)}`;
-        
-        // Evento cuando se mueve el marcador
-        marker.on('dragend', function(e) {
-            const position = marker.getLatPosition();
-            actualizarCoordenadas(position.lat, position.lng);
-        });
-    }
-    
-    // Evento de clic en el mapa
-    map.on('click', function(e) {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-        
-        // Remover marcador anterior si existe
-        if (marker) {
-            map.removeLayer(marker);
-        }
-        
-        // Agregar nuevo marcador (arrastrable)
-        marker = L.marker([lat, lng], {
-            draggable: true
-        }).addTo(map);
-        
-        // Actualizar coordenadas
-        actualizarCoordenadas(lat, lng);
-        
-        // Evento cuando se mueve el marcador
-        marker.on('dragend', function(e) {
-            const position = marker.getLatLng();
-            actualizarCoordenadas(position.lat, position.lng);
-        });
-        
-        // Agregar popup informativo
-        marker.bindPopup('<strong>Ubicación del Stand</strong><br>Puedes arrastrar este marcador').openPopup();
-    });
-    
-    // Función para actualizar coordenadas
-    function actualizarCoordenadas(lat, lng) {
-        document.getElementById('latitud').value = lat.toFixed(6);
-        document.getElementById('longitud').value = lng.toFixed(6);
-        document.getElementById('coordenadasTexto').innerHTML = 
-            `<strong>Coordenadas seleccionadas:</strong> Latitud: ${lat.toFixed(6)}, Longitud: ${lng.toFixed(6)}`;
-    }
-    
-    // Botón para obtener ubicación actual
-    const btnUbicacion = document.createElement('button');
-    btnUbicacion.type = 'button';
-    btnUbicacion.className = 'btn btn-sm btn-outline-primary mt-2';
-    btnUbicacion.innerHTML = '<i class="bi bi-geo-fill me-1"></i> Usar Mi Ubicación Actual';
-    btnUbicacion.onclick = function() {
-        if (navigator.geolocation) {
-            btnUbicacion.disabled = true;
-            btnUbicacion.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Obteniendo ubicación...';
-            
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                map.setView([lat, lng], 15);
-                
-                if (marker) {
-                    map.removeLayer(marker);
-                }
-                
-                marker = L.marker([lat, lng], {
-                    draggable: true
-                }).addTo(map);
-                
-                actualizarCoordenadas(lat, lng);
-                
-                marker.on('dragend', function(e) {
-                    const position = marker.getLatLng();
-                    actualizarCoordenadas(position.lat, position.lng);
-                });
-                
-                marker.bindPopup('<strong>Tu ubicación actual</strong><br>Puedes arrastrar este marcador').openPopup();
-                
-                btnUbicacion.disabled = false;
-                btnUbicacion.innerHTML = '<i class="bi bi-geo-fill me-1"></i> Usar Mi Ubicación Actual';
-            }, function(error) {
-                alert('No se pudo obtener tu ubicación: ' + error.message);
-                btnUbicacion.disabled = false;
-                btnUbicacion.innerHTML = '<i class="bi bi-geo-fill me-1"></i> Usar Mi Ubicación Actual';
-            });
-        } else {
-            alert('Tu navegador no soporta geolocalización');
-        }
-    };
-    
-    document.getElementById('map').parentElement.appendChild(btnUbicacion);
-    
-    // Validar que se haya seleccionado una ubicación antes de enviar
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const lat = document.getElementById('latitud').value;
-        const lng = document.getElementById('longitud').value;
-        
-        if (!lat || !lng) {
-            e.preventDefault();
-            alert('Por favor, selecciona una ubicación en el mapa');
-            document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-</script>
 </body>
 </html>

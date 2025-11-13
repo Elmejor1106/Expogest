@@ -18,6 +18,10 @@ public class Evento {
     private EstadoEvento estado;
     private Integer capacidadMaximaStands;
     private List<String> standsAsociados; // IDs de stands asociados
+    
+    // Coordenadas geográficas para ubicación del evento en mapa
+    private Double latitud;
+    private Double longitud;
 
     public enum EstadoEvento {
         PLANIFICACION,
@@ -93,6 +97,20 @@ public class Evento {
     }
     public void setStandsAsociados(List<String> standsAsociados) {
         this.standsAsociados = standsAsociados;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
     }
 
     // Métodos de utilidad
