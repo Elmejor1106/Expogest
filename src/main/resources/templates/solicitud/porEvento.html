@@ -160,8 +160,14 @@
                     <tbody>
                         <tr th:each="solicitud : ${solicitudes}" th:attr="data-estado=${solicitud.estado.toString()}">
                             <td th:text="${#temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td><small th:text="${solicitud.expositorId}"></small></td>
-                            <td><small th:text="${solicitud.standId}"></small></td>
+                            <td>
+                                <strong th:text="${nombresUsuarios.get(solicitud.expositorId)}"></strong><br>
+                                <small class="text-muted" th:text="${solicitud.expositorId}"></small>
+                            </td>
+                            <td>
+                                <strong th:text="${nombresStands.get(solicitud.standId)}"></strong><br>
+                                <small class="text-muted" th:text="${solicitud.standId}"></small>
+                            </td>
                             <td>
                                 <span th:text="${#strings.abbreviate(solicitud.descripcion, 40)}"></span>
                                 <button type="button" class="btn btn-sm btn-link p-0" 

@@ -72,7 +72,8 @@
                     <div class="mb-3">
                         <h6 class="text-muted mb-2"><i class="bi bi-person"></i> Expositor</h6>
                         <p class="mb-0">
-                            <small class="font-monospace" th:text="${solicitud.expositorId}"></small>
+                            <strong th:text="${nombresUsuarios.get(solicitud.expositorId)}"></strong><br>
+                            <small class="font-monospace text-muted" th:text="${solicitud.expositorId}"></small>
                         </p>
                     </div>
 
@@ -80,7 +81,8 @@
                     <div class="mb-3">
                         <h6 class="text-muted mb-2"><i class="bi bi-calendar-event"></i> Evento</h6>
                         <p class="mb-0">
-                            <small th:text="${solicitud.eventoId}"></small>
+                            <strong th:text="${nombresEventos.get(solicitud.eventoId)}"></strong><br>
+                            <small class="text-muted" th:text="${solicitud.eventoId}"></small>
                         </p>
                     </div>
 
@@ -88,7 +90,8 @@
                     <div class="mb-3">
                         <h6 class="text-muted mb-2"><i class="bi bi-shop"></i> Stand Solicitado</h6>
                         <p class="mb-0">
-                            <small th:text="${solicitud.standId}"></small>
+                            <strong th:text="${nombresStands.get(solicitud.standId)}"></strong><br>
+                            <small class="text-muted" th:text="${solicitud.standId}"></small>
                         </p>
                     </div>
 

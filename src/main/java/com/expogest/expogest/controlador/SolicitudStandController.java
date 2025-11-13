@@ -5,12 +5,16 @@ import com.expogest.expogest.entidades.Usuario;
 import com.expogest.expogest.servicios.SolicitudStandService;
 import com.expogest.expogest.servicios.EventoService;
 import com.expogest.expogest.servicios.StandService;
+import com.expogest.expogest.repository.UsuarioRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/solicitudes")
@@ -25,12 +29,40 @@ public class SolicitudStandController {
     @Autowired
     private StandService standService;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     /**
      * Listar todas las solicitudes (para organizador/admin)
      */
     @GetMapping
     public String listarSolicitudes(Model model) {
-        model.addAttribute("solicitudes", solicitudService.obtenerTodas());
+        var solicitudes = solicitudService.obtenerTodas();
+        
+        // Crear mapas para nombres
+        Map<String, String> nombresUsuarios = new HashMap<>();
+        Map<String, String> nombresEventos = new HashMap<>();
+        Map<String, String> nombresStands = new HashMap<>();
+        
+        for (SolicitudStand solicitud : solicitudes) {
+            // Obtener nombre del expositor
+            usuarioRepository.findById(solicitud.getExpositorId())
+                .ifPresent(u -> nombresUsuarios.put(solicitud.getExpositorId(), u.getNombre()));
+            
+            // Obtener nombre del evento
+            eventoService.obtenerPorId(solicitud.getEventoId())
+                .ifPresent(e -> nombresEventos.put(solicitud.getEventoId(), e.getNombre()));
+            
+            // Obtener nombre del stand
+            standService.obtenerPorId(solicitud.getStandId())
+                .ifPresent(s -> nombresStands.put(solicitud.getStandId(), s.getNombre()));
+        }
+        
+        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("nombresUsuarios", nombresUsuarios);
+        model.addAttribute("nombresEventos", nombresEventos);
+        model.addAttribute("nombresStands", nombresStands);
+        model.addAttribute("eventos", eventoService.obtenerTodos());
         return "solicitud/lista";
     }
 
@@ -39,7 +71,31 @@ public class SolicitudStandController {
      */
     @GetMapping("/pendientes")
     public String listarPendientes(Model model) {
-        model.addAttribute("solicitudes", solicitudService.obtenerPendientes());
+        var solicitudes = solicitudService.obtenerPendientes();
+        
+        // Crear mapas para nombres
+        Map<String, String> nombresUsuarios = new HashMap<>();
+        Map<String, String> nombresEventos = new HashMap<>();
+        Map<String, String> nombresStands = new HashMap<>();
+        
+        for (SolicitudStand solicitud : solicitudes) {
+            // Obtener nombre del expositor
+            usuarioRepository.findById(solicitud.getExpositorId())
+                .ifPresent(u -> nombresUsuarios.put(solicitud.getExpositorId(), u.getNombre()));
+            
+            // Obtener nombre del evento
+            eventoService.obtenerPorId(solicitud.getEventoId())
+                .ifPresent(e -> nombresEventos.put(solicitud.getEventoId(), e.getNombre()));
+            
+            // Obtener nombre del stand
+            standService.obtenerPorId(solicitud.getStandId())
+                .ifPresent(s -> nombresStands.put(solicitud.getStandId(), s.getNombre()));
+        }
+        
+        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("nombresUsuarios", nombresUsuarios);
+        model.addAttribute("nombresEventos", nombresEventos);
+        model.addAttribute("nombresStands", nombresStands);
         return "solicitud/pendientes";
     }
 
@@ -48,9 +104,27 @@ public class SolicitudStandController {
      */
     @GetMapping("/evento/{eventoId}")
     public String listarPorEvento(@PathVariable String eventoId, Model model) {
+        var solicitudes = solicitudService.obtenerPorEvento(eventoId);
+        
+        // Crear mapas para nombres
+        Map<String, String> nombresUsuarios = new HashMap<>();
+        Map<String, String> nombresStands = new HashMap<>();
+        
+        for (SolicitudStand solicitud : solicitudes) {
+            // Obtener nombre del expositor
+            usuarioRepository.findById(solicitud.getExpositorId())
+                .ifPresent(u -> nombresUsuarios.put(solicitud.getExpositorId(), u.getNombre()));
+            
+            // Obtener nombre del stand
+            standService.obtenerPorId(solicitud.getStandId())
+                .ifPresent(s -> nombresStands.put(solicitud.getStandId(), s.getNombre()));
+        }
+        
         model.addAttribute("evento", eventoService.obtenerPorId(eventoId).orElse(null));
-        model.addAttribute("solicitudes", solicitudService.obtenerPorEvento(eventoId));
+        model.addAttribute("solicitudes", solicitudes);
         model.addAttribute("pendientes", solicitudService.obtenerPendientesPorEvento(eventoId));
+        model.addAttribute("nombresUsuarios", nombresUsuarios);
+        model.addAttribute("nombresStands", nombresStands);
         return "solicitud/porEvento";
     }
 
