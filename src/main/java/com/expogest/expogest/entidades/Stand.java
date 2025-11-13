@@ -19,6 +19,10 @@ public class Stand {
     private EstadoStand estado;
     private String eventoId; // ID del evento al que está asociado
     private String expositorId; // ID del expositor asignado
+    
+    // Coordenadas geográficas para ubicación en mapa
+    private Double latitud;
+    private Double longitud;
 
     public enum EstadoStand {
         DISPONIBLE,
@@ -93,6 +97,20 @@ public class Stand {
     }
     public void setExpositorId(String expositorId) {
         this.expositorId = expositorId;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
     }
 
     // Métodos de utilidad
