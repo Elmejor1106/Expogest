@@ -98,14 +98,14 @@ public class SolicitudStandService {
 
         Stand stand = standOpt.get();
 
-        // Validar que el stand está disponible
-        if (!stand.estaDisponible()) {
-            throw new IllegalStateException("El stand no está disponible");
-        }
-
         // Validar que el stand pertenece al evento
         if (stand.getEventoId() == null || !stand.getEventoId().equals(solicitud.getEventoId())) {
             throw new IllegalStateException("El stand no está asociado a este evento");
+        }
+
+        // Validar que el stand está disponible (no asignado a ningún expositor)
+        if (!stand.estaDisponible()) {
+            throw new IllegalStateException("El stand no está disponible para solicitudes");
         }
 
         // Validar que el expositor no tenga ya una solicitud para este evento
@@ -155,8 +155,8 @@ public class SolicitudStandService {
         }
 
         Stand stand = standOpt.get();
-        if (!stand.estaDisponible() && stand.getEstado() != Stand.EstadoStand.RESERVADO) {
-            throw new IllegalStateException("El stand ya no está disponible");
+        if (!stand.estaDisponible()) {
+            throw new IllegalStateException("El stand ya no está disponible (fue asignado a otro expositor)");
         }
 
         // Asignar el stand al expositor

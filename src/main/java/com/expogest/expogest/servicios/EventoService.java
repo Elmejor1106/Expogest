@@ -66,6 +66,11 @@ public class EventoService {
         Evento evento = eventoOpt.get();
         Stand stand = standOpt.get();
 
+        // Verificar si ya está asociado para evitar duplicados
+        if (evento.getStandsAsociados().contains(standId)) {
+            throw new IllegalStateException("El stand ya está asociado a este evento");
+        }
+
         // Validar capacidad
         if (!evento.tieneCapacidadDisponible()) {
             throw new IllegalStateException("El evento ha alcanzado su capacidad máxima de stands");
@@ -76,10 +81,16 @@ public class EventoService {
             throw new IllegalStateException("El stand no está disponible");
         }
 
+        // Validar que el stand no esté ya asociado a otro evento
+        if (stand.getEventoId() != null && !stand.getEventoId().equals(eventoId)) {
+            throw new IllegalStateException("El stand ya está asociado a otro evento");
+        }
+
         // Asociar stand al evento
         evento.getStandsAsociados().add(standId);
         stand.setEventoId(eventoId);
-        stand.setEstado(Stand.EstadoStand.RESERVADO);
+        // Mantener como DISPONIBLE para que expositores puedan solicitarlo
+        // stand.setEstado(Stand.EstadoStand.DISPONIBLE); // Ya está disponible
 
         eventoRepository.save(evento);
         standRepository.save(stand);

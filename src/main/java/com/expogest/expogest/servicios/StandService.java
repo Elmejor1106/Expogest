@@ -91,12 +91,9 @@ public class StandService {
         Stand stand = standOpt.get();
         stand.setExpositorId(null);
         
-        // Si tiene evento asociado, volver a RESERVADO, sino DISPONIBLE
-        if (stand.getEventoId() != null) {
-            stand.setEstado(EstadoStand.RESERVADO);
-        } else {
-            stand.setEstado(EstadoStand.DISPONIBLE);
-        }
+        // Si tiene evento asociado, volver a DISPONIBLE para nuevas solicitudes
+        // Si no tiene evento, también DISPONIBLE
+        stand.setEstado(EstadoStand.DISPONIBLE);
         
         standRepository.save(stand);
         return true;
