@@ -1,7 +1,9 @@
 package com.expogest.expogest.controlador;
 
+import com.expogest.expogest.entidades.Usuario;
 import com.expogest.expogest.servicios.EventoService;
 import com.expogest.expogest.servicios.SolicitudStandService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,10 +27,12 @@ public class ExpositorController {
      * Muestra las solicitudes del expositor (igual que mis-solicitudes)
      */
     @GetMapping("/expositor/solicitudStand")
-    public String solicitudStand(Model model) {
-        // TODO: Obtener ID del usuario logueado
-        String expositorId = "expositor-test-id";
-        model.addAttribute("solicitudes", solicitudService.obtenerPorExpositor(expositorId));
+    public String solicitudStand(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("solicitudes", solicitudService.obtenerPorExpositor(usuario.getId()));
         return "expositor/solicitudStand";
     }
 

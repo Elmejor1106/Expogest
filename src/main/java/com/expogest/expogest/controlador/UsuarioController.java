@@ -2,6 +2,7 @@ package com.expogest.expogest.controlador;
 
 import com.expogest.expogest.entidades.Usuario;
 import com.expogest.expogest.repository.UsuarioRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,9 +46,15 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public String loginUsuario(@RequestParam String correo, @RequestParam String contrasena, Model model) {
+    public String loginUsuario(@RequestParam String correo, @RequestParam String contrasena, 
+                              HttpSession session, Model model) {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuario != null && contrasena.equals(usuario.getContrasena())) {
+            // Guardar usuario en sesión
+            session.setAttribute("usuario", usuario);
+            session.setAttribute("usuarioId", usuario.getId());
+            session.setAttribute("usuarioRol", usuario.getRol().toString());
+            
             // Redirección según rol (enum)
             Usuario.Rol rol = usuario.getRol();
             if (rol == Usuario.Rol.ADMINISTRADOR) {
@@ -75,10 +82,17 @@ public class UsuarioController {
     }
 
     @GetMapping("/logout")
-    public String logout() {
-        // En una implementación real, aquí se invalidaría la sesión
-        // HttpSession.invalidate()
+    public String logout(HttpSession session) {
+        // Invalidar la sesión
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/login";
+    }
+
+    @GetMapping("/acceso-denegado")
+    public String accesoDenegado() {
+        return "acceso-denegado";
     }
 
 }

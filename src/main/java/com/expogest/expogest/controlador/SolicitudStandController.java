@@ -1,10 +1,11 @@
 package com.expogest.expogest.controlador;
 
 import com.expogest.expogest.entidades.SolicitudStand;
-import com.expogest.expogest.entidades.SolicitudStand.EstadoSolicitud;
+import com.expogest.expogest.entidades.Usuario;
 import com.expogest.expogest.servicios.SolicitudStandService;
 import com.expogest.expogest.servicios.EventoService;
 import com.expogest.expogest.servicios.StandService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -82,11 +83,13 @@ public class SolicitudStandController {
      * Guardar solicitud (expositor)
      */
     @PostMapping("/guardar")
-    public String guardarSolicitud(@ModelAttribute SolicitudStand solicitud, RedirectAttributes redirectAttributes) {
+    public String guardarSolicitud(@ModelAttribute SolicitudStand solicitud, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Obtener ID del usuario logueado
-            // Por ahora usar un ID de prueba
-            solicitud.setExpositorId("expositor-test-id");
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            if (usuario == null) {
+                return "redirect:/login";
+            }
+            solicitud.setExpositorId(usuario.getId());
             
             solicitudService.crearSolicitud(solicitud);
             redirectAttributes.addFlashAttribute("mensaje", "Solicitud enviada exitosamente. Estará pendiente de aprobación.");
@@ -107,10 +110,12 @@ public class SolicitudStandController {
      * Mis solicitudes (expositor)
      */
     @GetMapping("/mis-solicitudes")
-    public String misSolicitudes(Model model) {
-        // TODO: Obtener ID del usuario logueado
-        String expositorId = "expositor-test-id";
-        model.addAttribute("solicitudes", solicitudService.obtenerPorExpositor(expositorId));
+    public String misSolicitudes(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("solicitudes", solicitudService.obtenerPorExpositor(usuario.getId()));
         return "solicitud/misSolicitudes";
     }
 
@@ -118,10 +123,13 @@ public class SolicitudStandController {
      * Aprobar solicitud (organizador)
      */
     @PostMapping("/{id}/aprobar")
-    public String aprobarSolicitud(@PathVariable String id, RedirectAttributes redirectAttributes) {
+    public String aprobarSolicitud(@PathVariable String id, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Obtener ID del usuario logueado (organizador)
-            String organizadorId = "organizador-test-id";
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            if (usuario == null) {
+                return "redirect:/login";
+            }
+            String organizadorId = usuario.getId();
             
             solicitudService.aprobarSolicitud(id, organizadorId);
             redirectAttributes.addFlashAttribute("mensaje", "Solicitud aprobada exitosamente");
@@ -139,10 +147,14 @@ public class SolicitudStandController {
     @PostMapping("/{id}/rechazar")
     public String rechazarSolicitud(@PathVariable String id, 
                                    @RequestParam String motivo,
+                                   HttpSession session,
                                    RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Obtener ID del usuario logueado (organizador)
-            String organizadorId = "organizador-test-id";
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            if (usuario == null) {
+                return "redirect:/login";
+            }
+            String organizadorId = usuario.getId();
             
             solicitudService.rechazarSolicitud(id, organizadorId, motivo);
             redirectAttributes.addFlashAttribute("mensaje", "Solicitud rechazada");
@@ -158,10 +170,13 @@ public class SolicitudStandController {
      * Cancelar solicitud (expositor)
      */
     @PostMapping("/{id}/cancelar")
-    public String cancelarSolicitud(@PathVariable String id, RedirectAttributes redirectAttributes) {
+    public String cancelarSolicitud(@PathVariable String id, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Obtener ID del usuario logueado
-            String expositorId = "expositor-test-id";
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            if (usuario == null) {
+                return "redirect:/login";
+            }
+            String expositorId = usuario.getId();
             
             solicitudService.cancelarSolicitud(id, expositorId);
             redirectAttributes.addFlashAttribute("mensaje", "Solicitud cancelada");
