@@ -95,4 +95,9 @@ public class UsuarioController {
         return "acceso-denegado";
     }
 
+    @GetMapping("/en-construccion")
+    public String enConstruccion() {
+        return "en-construccion";
+    }
+
 }

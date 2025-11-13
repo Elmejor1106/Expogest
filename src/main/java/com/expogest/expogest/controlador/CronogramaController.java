@@ -19,33 +19,31 @@ public class CronogramaController {
 
     @GetMapping
     public String listarCronograma(Model model) {
-        model.addAttribute("cronogramas", cronogramaRepository.findAll());
-        return "organizador/cronograma";
+        // Redirigir a página en construcción
+        return "redirect:/en-construccion";
     }
 
     @GetMapping("/nuevo")
     public String nuevoCronograma(Model model) {
-        model.addAttribute("cronograma", new Cronograma());
-        model.addAttribute("eventos", eventoRepository.findAll());
-        return "organizador/cronogramaForm";
+        // Redirigir a página en construcción
+        return "redirect:/en-construccion";
     }
 
     @PostMapping("/guardar")
     public String guardarCronograma(@ModelAttribute Cronograma cronograma) {
-        cronogramaRepository.save(cronograma);
-        return "redirect:/cronograma";
+        // Redirigir a página en construcción
+        return "redirect:/en-construccion";
     }
 
     @GetMapping("/editar/{id}")
     public String editarCronograma(@PathVariable String id, Model model) {
-        model.addAttribute("cronograma", cronogramaRepository.findById(id).orElse(null));
-        model.addAttribute("eventos", eventoRepository.findAll());
-        return "organizador/cronogramaForm";
+        // Redirigir a página en construcción
+        return "redirect:/en-construccion";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarCronograma(@PathVariable String id) {
-        cronogramaRepository.deleteById(id);
-        return "redirect:/cronograma";
+        // Redirigir a página en construcción
+        return "redirect:/en-construccion";
     }
 }

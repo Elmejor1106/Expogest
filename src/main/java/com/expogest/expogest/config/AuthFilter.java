@@ -53,6 +53,7 @@ public class AuthFilter implements Filter {
         return uri.equals("/") || 
                uri.equals("/login") || 
                uri.equals("/registro") ||
+               uri.equals("/en-construccion") ||
                uri.startsWith("/css") || 
                uri.startsWith("/js") || 
                uri.startsWith("/images") ||

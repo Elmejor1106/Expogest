@@ -30,6 +30,6 @@ public class OrganizadorController {
 
     @GetMapping("/organizador/cronograma")
     public String cronograma() {
-        return "organizador/cronograma";
+        return "redirect:/en-construccion";
     }
 }

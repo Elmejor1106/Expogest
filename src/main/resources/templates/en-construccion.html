@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>En Construcción - ExpoGest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFD600 0%, #434343 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .construccion-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .construccion-icon {
+            font-size: 6rem;
+            color: #FFD600;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .construccion-title {
+            color: #434343;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .construccion-message {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-volver {
+            background: linear-gradient(135deg, #FFD600 0%, #FFA500 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: #434343;
+        }
+        
+        .btn-volver:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 214, 0, 0.4);
+            color: #434343;
+        }
+        
+        .features-list {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .features-list h6 {
+            color: #434343;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .features-list li {
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="construccion-container">
+        <i class="bi bi-tools construccion-icon"></i>
+        <h1 class="construccion-title">¡Estamos Trabajando en Esto!</h1>
+        <p class="construccion-message">
+            Esta funcionalidad está actualmente en desarrollo.
+            <br>Pronto estará disponible para ti.
+        </p>
+        
+        <div class="features-list">
+            <h6><i class="bi bi-calendar-event text-warning"></i> Próximamente:</h6>
+            <ul>
+                <li><i class="bi bi-check-circle text-success"></i> Gestión completa de cronogramas</li>
+                <li><i class="bi bi-check-circle text-success"></i> Programación de actividades</li>
+                <li><i class="bi bi-check-circle text-success"></i> Calendario interactivo</li>
+                <li><i class="bi bi-check-circle text-success"></i> Notificaciones automáticas</li>
+            </ul>
+        </div>
+        
+        <a href="javascript:history.back()" class="btn btn-volver">
+            <i class="bi bi-arrow-left"></i> Volver al Panel
+        </a>
+    </div>
+</body>
+</html>
