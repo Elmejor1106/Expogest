@@ -21,13 +21,23 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/logout}">
+                        <a class="nav-link" href="#" onclick="confirmarCerrarSesion(event)">
                             <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
+        
+        <!-- Script de confirmación incluido automáticamente -->
+        <script>
+            function confirmarCerrarSesion(event) {
+                event.preventDefault();
+                if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                    window.location.href = '/logout';
+                }
+            }
+        </script>
     </nav>
 
     <!-- Estilos globales -->

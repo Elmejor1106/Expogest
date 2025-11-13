@@ -66,9 +66,18 @@
         <a href="javascript:history.back()" class="btn btn-primary">
             <i class="bi bi-arrow-left"></i> Volver
         </a>
-        <a href="/login" class="btn btn-outline-secondary ms-2">
+        <a href="#" onclick="confirmarCerrarSesion(event)" class="btn btn-outline-secondary ms-2">
             <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
         </a>
     </div>
+    
+    <script>
+        function confirmarCerrarSesion(event) {
+            event.preventDefault();
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                window.location.href = '/logout';
+            }
+        }
+    </script>
 </body>
 </html>
