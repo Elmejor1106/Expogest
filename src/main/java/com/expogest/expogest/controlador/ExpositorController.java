@@ -1,6 +1,7 @@
 package com.expogest.expogest.controlador;
 
 import com.expogest.expogest.entidades.Usuario;
+import com.expogest.expogest.entidades.SolicitudStand.EstadoSolicitud;
 import com.expogest.expogest.servicios.EventoService;
 import com.expogest.expogest.servicios.SolicitudStandService;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +20,27 @@ public class ExpositorController {
     private SolicitudStandService solicitudService;
 
     @GetMapping("/expositor/panelExpositor")
-    public String panelExpositor() {
+    public String panelExpositor(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+        
+        // Obtener estadísticas del expositor
+        var estadisticas = solicitudService.obtenerEstadisticasPorExpositor(usuario.getId());
+        model.addAttribute("estadisticasSolicitudes", estadisticas);
+        
+        // Calcular totales y tasa de aprobación
+        long total = estadisticas.values().stream().mapToLong(Long::longValue).sum();
+        long aprobadas = estadisticas.getOrDefault("aprobadas", 0L);
+        double tasaAprobacion = total > 0 ? (aprobadas * 100.0 / total) : 0;
+        
+        model.addAttribute("totalSolicitudes", total);
+        model.addAttribute("tasaAprobacion", String.format("%.1f", tasaAprobacion));
+        
+        // Eventos disponibles para solicitar
+        model.addAttribute("eventosDisponibles", eventoService.obtenerEventosActivos().size());
+        
         return "expositor/panelExpositor";
     }
 

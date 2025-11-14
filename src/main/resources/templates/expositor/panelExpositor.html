@@ -20,58 +20,134 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header text-center">
-                    <h2 class="mb-0"><i class="bi bi-person-badge me-2"></i>Panel de Expositor</h2>
+    <!-- Estadísticas Principales -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-white">
+                    <i class="bi bi-file-earmark-text display-4 mb-2"></i>
+                    <h3 class="mb-0" th:text="${estadisticasSolicitudes['pendientes']}">0</h3>
+                    <p class="mb-0">Pendientes</p>
+                    <span th:if="${estadisticasSolicitudes['pendientes'] > 0}" class="badge bg-warning">En revisión</span>
                 </div>
-                <div class="card-body p-5">
-                    <div class="text-center mb-5">
-                        <div class="icon-circle mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-shop-window fs-1 text-white"></i>
-                        </div>
-                        <h4 class="text-muted">Bienvenido al Panel de Expositor</h4>
-                        <p class="lead">Gestiona tus solicitudes de stands y participa en eventos.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="card-body text-white">
+                    <i class="bi bi-check-circle display-4 mb-2"></i>
+                    <h3 class="mb-0" th:text="${estadisticasSolicitudes['aprobadas']}">0</h3>
+                    <p class="mb-0">Aprobadas</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-white">
+                    <i class="bi bi-x-circle display-4 mb-2"></i>
+                    <h3 class="mb-0" th:text="${estadisticasSolicitudes['rechazadas']}">0</h3>
+                    <p class="mb-0">Rechazadas</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-white">
+                    <i class="bi bi-dash-circle display-4 mb-2"></i>
+                    <h3 class="mb-0" th:text="${estadisticasSolicitudes['canceladas']}">0</h3>
+                    <p class="mb-0">Canceladas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones Rápidas y Listado -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i>Acciones Rápidas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a th:href="@{/expositor/solicitudes/nueva}" class="btn btn-success btn-lg">
+                            <i class="bi bi-plus-circle me-2"></i>Solicitar Stand
+                        </a>
+                        
+                        <a th:href="@{/eventos}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-calendar-event me-2"></i>Ver Eventos
+                        </a>
+                        
+                        <a th:href="@{/solicitudes/mis-solicitudes}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-list-check me-2"></i>Mis Solicitudes
+                            <span th:if="${estadisticasSolicitudes['pendientes'] > 0}" 
+                                  class="badge bg-warning text-dark ms-2" 
+                                  th:text="${estadisticasSolicitudes['pendientes']}"></span>
+                        </a>
                     </div>
-
-                    <div class="row g-4 justify-content-center">
-                        <div class="col-md-5">
-                            <div class="card border-0 shadow-sm h-100 hover-card">
-                                <div class="card-body text-center p-4">
-                                    <i class="bi bi-plus-circle-fill display-3 mb-3" style="color: #28a745;"></i>
-                                    <h5 class="fw-bold">Solicitar Stand</h5>
-                                    <p class="text-muted small">Nueva solicitud de stand en eventos activos</p>
-                                    <a th:href="@{/expositor/solicitudes/nueva}" class="btn btn-success w-100">
-                                        <i class="bi bi-send"></i> Solicitar
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-5">
-                            <div class="card border-0 shadow-sm h-100 hover-card">
-                                <div class="card-body text-center p-4">
-                                    <i class="bi bi-list-check display-3 mb-3" style="color: #434343;"></i>
-                                    <h5 class="fw-bold">Mis Solicitudes</h5>
-                                    <p class="text-muted small">Ver estado de tus solicitudes</p>
-                                    <a th:href="@{/solicitudes/mis-solicitudes}" class="btn btn-outline-primary w-100">
-                                        <i class="bi bi-eye"></i> Ver Todas
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    
                     <!-- Información adicional -->
-                    <div class="alert alert-info mt-5">
+                    <div class="alert alert-info mt-4 mb-0">
                         <i class="bi bi-info-circle"></i>
                         <strong>Importante:</strong>
-                        <ul class="mb-0 mt-2">
+                        <ul class="mb-0 mt-2 small">
                             <li>Puedes solicitar stands para eventos activos</li>
                             <li>Cada solicitud debe ser aprobada por el organizador</li>
                             <li>Revisa el estado de tus solicitudes regularmente</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Resumen de Actividad</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="icon-circle mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-shop-window fs-1 text-white"></i>
+                        </div>
+                        <h4 class="text-muted">Bienvenido al Panel de Expositor</h4>
+                        <p class="lead mb-0">Gestiona tus solicitudes de stands y participa en eventos.</p>
+                    </div>
+
+                    <!-- Resumen Visual -->
+                    <div class="row text-center g-3">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-file-earmark-check text-success fs-1"></i>
+                                <h4 class="mt-2 mb-0" th:text="${estadisticasSolicitudes['aprobadas']}">0</h4>
+                                <small class="text-muted">Solicitudes Exitosas</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-hourglass-split text-warning fs-1"></i>
+                                <h4 class="mt-2 mb-0" th:text="${estadisticasSolicitudes['pendientes']}">0</h4>
+                                <small class="text-muted">Esperando Respuesta</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progreso -->
+                    <div class="mt-4">
+                        <h6 class="text-muted mb-3">Tasa de Aprobación</h6>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-success" 
+                                 th:style="'width: ' + ${tasaAprobacion} + '%;'"
+                                 th:text="${tasaAprobacion} + '%'">0%</div>
+                        </div>
+                        <small class="text-muted mt-2 d-block text-end">
+                            <span th:text="${estadisticasSolicitudes['aprobadas']}">0</span> de 
+                            <span th:text="${totalSolicitudes}">0</span> solicitudes aprobadas
+                        </small>
                     </div>
                 </div>
             </div>

@@ -4,80 +4,397 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExpoGest - Inicio</title>
-    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Iconos de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            /* Degradado de amarillo oscuro (#FFD600) a gris oscuro (#434343) */
-            background: linear-gradient(135deg, #FFD600 0%, #434343 100%);
+            overflow-x: hidden;
+            background: #0a0a0a;
+            position: relative;
         }
-        .navbar {
-            background: linear-gradient(90deg, #FFD600 0%, #434343 100%) !important;
+        .animated-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            background: linear-gradient(125deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            animation: gradientShift 15s ease infinite;
         }
-        .navbar-brand {
+        @keyframes gradientShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(45deg); }
+        }
+        .light-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: orbFloat 25s infinite ease-in-out;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            33% { transform: translate(150px, -150px) scale(1.3); opacity: 0.6; }
+            66% { transform: translate(-150px, 150px) scale(0.9); opacity: 0.3; }
+        }
+        .orb1 { top: 5%; left: 15%; width: 400px; height: 400px; background: #FFD600; }
+        .orb2 { top: 50%; right: 10%; width: 500px; height: 500px; background: #667eea; animation-delay: -8s; }
+        .orb3 { bottom: 5%; left: 35%; width: 450px; height: 450px; background: #f093fb; animation-delay: -16s; }
+        
+        /* Navbar futurista */
+        .navbar-futuristic {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1.2rem 0;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 214, 0, 0.1);
+        }
+        .navbar-brand-custom {
             font-size: 2rem;
-            letter-spacing: 2px;
-        }
-        .main-card {
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
-            background: rgba(255,255,255,0.97);
-            border: none;
-        }
-        .display-4 {
-            background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD600 0%, #FFA000 50%, #fff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: 2px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
-        .btn-outline-light, .btn-light {
-            font-weight: 500;
-            border-radius: 20px;
+        .nav-icon {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #0a0a0a;
+            box-shadow: 0 5px 20px rgba(255, 214, 0, 0.4);
+            animation: iconBounce 2s ease-in-out infinite;
         }
-        .btn-outline-light:hover, .btn-light:hover {
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.12);
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
-        .footer-custom {
-            background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+        .btn-nav {
+            padding: 0.7rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
         }
+        .btn-nav-primary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .btn-nav-primary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #FFD600;
+            color: #FFD600;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 214, 0, 0.3);
+        }
+        .btn-nav-secondary {
+            background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);
+            border: none;
+            color: #0a0a0a;
+            box-shadow: 0 5px 20px rgba(255, 214, 0, 0.4);
+        }
+        .btn-nav-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 214, 0, 0.6);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 4rem;
+        }
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 214, 0, 0.1);
+            border: 1px solid rgba(255, 214, 0, 0.3);
+            border-radius: 50px;
+            color: #FFD600;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD600 0%, #FFA000 30%, #fff 70%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+        .btn-hero {
+            padding: 1rem 2.5rem;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .btn-hero-primary {
+            background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);
+            color: #0a0a0a;
+            box-shadow: 0 10px 40px rgba(255, 214, 0, 0.5);
+        }
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(255, 214, 0, 0.7);
+        }
+        .btn-hero-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #FFD600;
+            color: #FFD600;
+            transform: translateY(-3px);
+        }
+        
+        /* Features Cards */
+        .features-section {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 2rem;
+            margin-top: -2rem;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 214, 0, 0.1), rgba(102, 126, 234, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 214, 0, 0.5);
+            box-shadow: 0 20px 60px rgba(255, 214, 0, 0.3);
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #0a0a0a;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-minimal {
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            font-weight: 300;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; }
+            .hero-subtitle { font-size: 1.1rem; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        body { animation: fadeIn 0.8s ease-in; }
     </style>
 </head>
 <body>
-
+    <div class="animated-bg"></div>
+    <div class="light-orb orb1"></div>
+    <div class="light-orb orb2"></div>
+    <div class="light-orb orb3"></div>
+    
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">Expoest</a>
-            <div class="d-flex">
-                <a class="btn btn-outline-light me-2" th:href="@{/login}">
-                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+    <nav class="navbar-futuristic">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <a href="#" class="navbar-brand-custom">
+                    <div class="nav-icon">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+                    <span>ExpoGest</span>
                 </a>
-                <a class="btn btn-light" th:href="@{/registro}">
-                    <i class="bi bi-person-plus-fill"></i> Registrarse
-                </a>
+                <div class="d-flex gap-3">
+                    <a class="btn-nav btn-nav-primary" th:href="@{/login}">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                    </a>
+                    <a class="btn-nav btn-nav-secondary" th:href="@{/registro}">
+                        <i class="bi bi-person-plus-fill me-2"></i>Registrarse
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
-
-    <!-- Contenido principal -->
-    <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-        <div class="main-card p-5 text-center">
-            <h1 class="display-4 fw-bold mb-3">Bienvenido a ExpoGest</h1>
-            <p class="lead mb-4">Gestión eficiente de eventos, stands y participantes.</p>
-            <img src="https://www.shutterstock.com/image-illustration/exhibition-stand-mockup-flat-used-600nw-2553309909.jpg" alt="Expo" width="600" class="my-4">
-            <p class="text-muted">Organiza tu feria tecnológica con facilidad.</p>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-stars me-2"></i>Plataforma Profesional de Gestión
+            </div>
+            <h1 class="hero-title">Bienvenido a ExpoGest</h1>
+            <p class="hero-subtitle">
+                La plataforma más innovadora para gestionar eventos empresariales, stands y participantes.
+                Transforma tu próxima feria en una experiencia inolvidable.
+            </p>
+            <div class="hero-buttons">
+                <a th:href="@{/registro}" class="btn-hero btn-hero-primary">
+                    <i class="bi bi-rocket-takeoff-fill"></i>
+                    Comenzar Ahora
+                </a>
+                <a th:href="@{/login}" class="btn-hero btn-hero-secondary">
+                    <i class="bi bi-play-circle-fill"></i>
+                    Ver Demo
+                </a>
+            </div>
         </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer-custom text-white text-center py-3 mt-5">
-        <small>© 2025 GestExpo. Todos los derechos reservados.</small>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-calendar-event-fill"></i>
+                </div>
+                <h3 class="feature-title">Gestión de Eventos</h3>
+                <p class="feature-text">Crea y administra eventos profesionales con ubicación en mapa interactivo y control total.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                </div>
+                <h3 class="feature-title">Control de Stands</h3>
+                <p class="feature-text">Asigna y gestiona stands de manera eficiente con sistema de solicitudes automatizado.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <h3 class="feature-title">Roles Múltiples</h3>
+                <p class="feature-text">Organizadores, expositores, visitantes y evaluadores con paneles personalizados.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <h3 class="feature-title">Estadísticas en Tiempo Real</h3>
+                <p class="feature-text">Dashboards interactivos con métricas clave y visualización de datos avanzada.</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer-minimal">
+        <div>© 2025 ExpoGest • Innovación en Gestión de Eventos Empresariales</div>
     </footer>
-
-    <!-- Bootstrap JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

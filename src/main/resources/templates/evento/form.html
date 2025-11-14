@@ -55,22 +55,13 @@
                 <input type="hidden" th:if="${evento.id != null}" th:field="*{id}" />
 
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <label for="nombre" class="form-label fw-bold">
                             <i class="bi bi-tag me-1"></i>Nombre del Evento
                             <span class="text-danger">*</span>
                         </label>
                         <input type="text" th:field="*{nombre}" class="form-control" id="nombre" 
                                placeholder="Ej: Feria Tecnológica 2025" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="lugar" class="form-label fw-bold">
-                            <i class="bi bi-geo-alt me-1"></i>Lugar
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" th:field="*{lugar}" class="form-control" id="lugar" 
-                               placeholder="Ej: Centro de Convenciones" required>
                     </div>
                 </div>
 

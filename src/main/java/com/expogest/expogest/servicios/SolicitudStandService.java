@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class SolicitudStandService {
@@ -264,5 +266,52 @@ public class SolicitudStandService {
      */
     public List<SolicitudStand> obtenerPorStand(String standId) {
         return solicitudRepository.findByStandId(standId);
+    }
+    
+    /**
+     * Obtener estadísticas de solicitudes
+     */
+    public Map<String, Long> obtenerEstadisticas() {
+        List<SolicitudStand> todasLasSolicitudes = solicitudRepository.findAll();
+        Map<String, Long> stats = new HashMap<>();
+        
+        stats.put("total", (long) todasLasSolicitudes.size());
+        stats.put("pendientes", todasLasSolicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE).count());
+        stats.put("aprobadas", todasLasSolicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.APROBADA).count());
+        stats.put("rechazadas", todasLasSolicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.RECHAZADA).count());
+        stats.put("canceladas", todasLasSolicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.CANCELADA).count());
+        
+        return stats;
+    }
+    
+    /**
+     * Obtener contador de solicitudes pendientes
+     */
+    public long contarPendientes() {
+        return solicitudRepository.countByEstado(EstadoSolicitud.PENDIENTE);
+    }
+    
+    /**
+     * Obtener estadísticas de solicitudes por expositor
+     */
+    public Map<String, Long> obtenerEstadisticasPorExpositor(String expositorId) {
+        List<SolicitudStand> solicitudes = obtenerPorExpositor(expositorId);
+        Map<String, Long> stats = new HashMap<>();
+        
+        stats.put("total", (long) solicitudes.size());
+        stats.put("pendientes", solicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE).count());
+        stats.put("aprobadas", solicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.APROBADA).count());
+        stats.put("rechazadas", solicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.RECHAZADA).count());
+        stats.put("canceladas", solicitudes.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.CANCELADA).count());
+        
+        return stats;
     }
 }

@@ -2,27 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar Fragment -->
-    <nav th:fragment="navbar(rolTitulo, panelUrl)" class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(90deg, #FFD600 0%, #434343 100%);">
+    <nav th:fragment="navbar(rolTitulo, panelUrl)" class="navbar navbar-expand-lg navbar-dark mb-4" style="background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(255, 214, 0, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold fs-4" th:href="${panelUrl}">
-                <i class="bi bi-award-fill me-2"></i>ExpoGest - <span th:text="${rolTitulo}"></span>
+            <a class="navbar-brand fw-bold fs-4" th:href="${panelUrl}" style="display: flex; align-items: center; gap: 0.8rem;">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 214, 0, 0.5);">
+                    <i class="bi bi-award-fill" style="font-size: 1.3rem; color: #0a0a0a;"></i>
+                </div>
+                <span style="background: linear-gradient(135deg, #FFD600 0%, #FFA000 50%, #fff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 1px;">ExpoGest</span>
+                <span style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; font-weight: 500;">• <span th:text="${rolTitulo}"></span></span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: rgba(255, 214, 0, 0.3);">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto" style="gap: 0.5rem;">
+                    <!-- Notificaciones para Organizador -->
+                    <li class="nav-item" th:if="${rolTitulo == 'Organizador' && solicitudesPendientes != null && solicitudesPendientes > 0}">
+                        <a class="nav-link position-relative" th:href="@{/solicitudes/pendientes}" style="padding: 0.6rem 1.2rem; border-radius: 12px; background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3); transition: all 0.3s ease;">
+                            <i class="bi bi-bell-fill" style="color: #dc3545;"></i>
+                            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;">Solicitudes</span>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" 
+                                  style="background: linear-gradient(135deg, #dc3545, #c82333); box-shadow: 0 4px 15px rgba(220, 53, 69, 0.5);"
+                                  th:text="${solicitudesPendientes}">0</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Notificaciones para Expositor -->
+                    <li class="nav-item" th:if="${rolTitulo == 'Expositor' && estadisticasSolicitudes != null && estadisticasSolicitudes['pendientes'] != null && estadisticasSolicitudes['pendientes'] > 0}">
+                        <a class="nav-link position-relative" th:href="@{/solicitudes/mis-solicitudes}" style="padding: 0.6rem 1.2rem; border-radius: 12px; background: rgba(255, 193, 7, 0.15); border: 1px solid rgba(255, 193, 7, 0.3); transition: all 0.3s ease;">
+                            <i class="bi bi-bell-fill" style="color: #ffc107;"></i>
+                            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;">Mis Solicitudes</span>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" 
+                                  style="background: linear-gradient(135deg, #ffc107, #ff9800); color: #0a0a0a; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.5);"
+                                  th:text="${estadisticasSolicitudes['pendientes']}">0</span>
+                        </a>
+                    </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link" th:href="${panelUrl}">
-                            <i class="bi bi-house-door-fill"></i> Inicio
+                        <a class="nav-link" th:href="${panelUrl}" style="padding: 0.6rem 1.2rem; border-radius: 12px; background: rgba(255, 255, 255, 0.05); transition: all 0.3s ease;">
+                            <i class="bi bi-house-door-fill" style="color: #FFD600;"></i>
+                            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;">Inicio</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="confirmarCerrarSesion(event)">
-                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                        <a class="nav-link" href="#" onclick="confirmarCerrarSesion(event)" style="padding: 0.6rem 1.2rem; border-radius: 12px; background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.2); transition: all 0.3s ease;">
+                            <i class="bi bi-box-arrow-right" style="color: #dc3545;"></i>
+                            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;">Cerrar Sesión</span>
                         </a>
                     </li>
                 </ul>
@@ -43,73 +72,150 @@
     <!-- Estilos globales -->
     <div th:fragment="styles">
         <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
             body {
+                font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                 min-height: 100vh;
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(125deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+                background-attachment: fixed;
             }
             .navbar {
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                font-family: 'Poppins', sans-serif;
             }
             .navbar-brand {
                 letter-spacing: 1px;
             }
+            .nav-link:hover {
+                background: rgba(255, 214, 0, 0.15) !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(255, 214, 0, 0.2);
+            }
             .card {
                 border: none;
-                border-radius: 16px;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-                background: white;
+                border-radius: 24px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(20px) saturate(180%);
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
             .card-header {
-                background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+                background: linear-gradient(135deg, rgba(255, 214, 0, 0.2) 0%, rgba(67, 67, 67, 0.2) 100%);
                 color: white;
-                border-radius: 16px 16px 0 0 !important;
+                border-radius: 24px 24px 0 0 !important;
                 padding: 1.5rem;
                 font-weight: 600;
+                border-bottom: 1px solid rgba(255, 214, 0, 0.3);
             }
             .btn-primary {
-                background: linear-gradient(90deg, #FFD600 0%, #FFA000 100%);
+                background: linear-gradient(135deg, #FFD600 0%, #FFA000 100%);
                 border: none;
-                font-weight: 500;
-                padding: 0.6rem 1.5rem;
-                border-radius: 8px;
-                transition: all 0.3s;
+                font-weight: 600;
+                padding: 0.7rem 1.8rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                color: #0a0a0a;
+                box-shadow: 0 5px 20px rgba(255, 214, 0, 0.4);
             }
             .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(255, 214, 0, 0.4);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 30px rgba(255, 214, 0, 0.6);
+                color: #0a0a0a;
             }
             .btn-secondary {
-                background: linear-gradient(90deg, #434343 0%, #2c2c2c 100%);
-                border: none;
-                font-weight: 500;
-                padding: 0.6rem 1.5rem;
-                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                font-weight: 600;
+                padding: 0.7rem 1.8rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                color: #fff;
+            }
+            .btn-secondary:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.4);
+                transform: translateY(-2px);
             }
             .btn-outline-primary {
                 border: 2px solid #FFD600;
-                color: #434343;
-                font-weight: 500;
-                border-radius: 8px;
+                color: #FFD600;
+                font-weight: 600;
+                border-radius: 12px;
+                padding: 0.7rem 1.8rem;
+                transition: all 0.3s ease;
             }
             .btn-outline-primary:hover {
                 background: #FFD600;
-                color: #434343;
+                color: #0a0a0a;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(255, 214, 0, 0.4);
             }
             .table {
-                background: white;
-                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 16px;
                 overflow: hidden;
+                color: rgba(255, 255, 255, 0.9);
             }
             .table thead {
-                background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
+                background: linear-gradient(135deg, rgba(255, 214, 0, 0.3) 0%, rgba(67, 67, 67, 0.3) 100%);
                 color: white;
             }
+            .table tbody tr {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                transition: all 0.3s ease;
+            }
+            .table tbody tr:hover {
+                background: rgba(255, 214, 0, 0.1);
+                transform: scale(1.01);
+            }
+            .form-control, .form-select {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                color: #fff;
+                padding: 0.8rem 1rem;
+                transition: all 0.3s ease;
+            }
+            .form-control:focus, .form-select:focus {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: #FFD600;
+                box-shadow: 0 0 20px rgba(255, 214, 0, 0.3);
+                color: #fff;
+            }
+            .form-control::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            .form-label {
+                color: rgba(255, 255, 255, 0.8);
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+            .badge {
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-weight: 600;
+            }
+            .alert {
+                border-radius: 16px;
+                border: none;
+                backdrop-filter: blur(10px);
+            }
             footer {
-                background: linear-gradient(90deg, #FFD600 0%, #434343 100%);
-                color: white;
-                padding: 1rem;
+                background: rgba(10, 10, 10, 0.8);
+                backdrop-filter: blur(20px);
+                color: rgba(255, 255, 255, 0.6);
+                padding: 1.5rem;
                 margin-top: auto;
+                border-top: 1px solid rgba(255, 214, 0, 0.2);
+            }
+            h1, h2, h3, h4, h5, h6 {
+                color: #fff;
+            }
+            p, span, label {
+                color: rgba(255, 255, 255, 0.85);
             }
         </style>
     </div>

@@ -14,12 +14,11 @@ public class Evento {
     private String descripcion;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private String lugar;
     private EstadoEvento estado;
     private Integer capacidadMaximaStands;
     private List<String> standsAsociados; // IDs de stands asociados
     
-    // Coordenadas geográficas para ubicación del evento en mapa
+    // Coordenadas geográficas para ubicación del evento en mapa (obligatorias)
     private Double latitud;
     private Double longitud;
 
@@ -69,13 +68,6 @@ public class Evento {
     }
     public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
-    }
-
-    public String getLugar() {
-        return lugar;
-    }
-    public void setLugar(String lugar) {
-        this.lugar = lugar;
     }
 
     public EstadoEvento getEstado() {

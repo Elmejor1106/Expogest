@@ -54,6 +54,7 @@ public class UsuarioController {
             session.setAttribute("usuario", usuario);
             session.setAttribute("usuarioId", usuario.getId());
             session.setAttribute("usuarioRol", usuario.getRol().toString());
+            session.setAttribute("rol", usuario.getRol().toString()); // Para validaciones
             
             // Redirección según rol (enum)
             Usuario.Rol rol = usuario.getRol();

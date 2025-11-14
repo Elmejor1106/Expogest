@@ -29,4 +29,10 @@ public interface SolicitudStandRepository extends MongoRepository<SolicitudStand
     
     // Contar solicitudes de un expositor para un evento
     long countByExpositorIdAndEventoId(String expositorId, String eventoId);
+    
+    // Contar solicitudes pendientes
+    long countByEstado(EstadoSolicitud estado);
+    
+    // Contar solicitudes aprobadas de un evento
+    long countByEventoIdAndEstado(String eventoId, EstadoSolicitud estado);
 }

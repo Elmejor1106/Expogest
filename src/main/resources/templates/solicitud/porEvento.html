@@ -41,8 +41,15 @@
                 </div>
                 <div class="col-md-4">
                     <p class="mb-1">
-                        <strong><i class="bi bi-geo-alt"></i> Lugar:</strong> 
-                        <span th:text="${evento.lugar}"></span>
+                        <strong><i class="bi bi-geo-alt"></i> Ubicación:</strong>
+                        <span th:if="${evento.latitud != null && evento.longitud != null}">
+                            <i class="bi bi-pin-map-fill text-danger"></i>
+                            <span th:text="${#numbers.formatDecimal(evento.latitud, 1, 4)}"></span>,
+                            <span th:text="${#numbers.formatDecimal(evento.longitud, 1, 4)}"></span>
+                        </span>
+                        <span th:if="${evento.latitud == null || evento.longitud == null}" class="text-warning">
+                            Sin ubicación
+                        </span>
                     </p>
                     <p class="mb-1">
                         <strong><i class="bi bi-calendar-range"></i> Fechas:</strong><br>

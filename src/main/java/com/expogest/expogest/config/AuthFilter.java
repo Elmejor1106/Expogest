@@ -40,8 +40,9 @@ public class AuthFilter implements Filter {
         
         // Verificar permisos según el rol y la ruta
         String rol = usuario.getRol().toString();
+        String metodo = httpRequest.getMethod();
         
-        if (!tienePermiso(requestURI, rol)) {
+        if (!tienePermiso(requestURI, rol, metodo)) {
             httpResponse.sendRedirect("/acceso-denegado");
             return;
         }
@@ -60,7 +61,7 @@ public class AuthFilter implements Filter {
                uri.startsWith("/static");
     }
     
-    private boolean tienePermiso(String uri, String rol) {
+    private boolean tienePermiso(String uri, String rol, String metodo) {
         // ADMIN tiene acceso a todo
         if ("ADMINISTRADOR".equals(rol)) {
             return true;
@@ -78,13 +79,18 @@ public class AuthFilter implements Filter {
                     !uri.matches(".*/(\\w+)/cancelar$"));
         }
         
-        // EXPOSITOR
+        // EXPOSITOR - Puede ver eventos activos y solicitar stands
         if ("EXPOSITOR".equals(rol)) {
+            // Permitir ver eventos solo en modo lectura (GET)
+            if (uri.startsWith("/eventos") && "GET".equals(metodo)) {
+                return true;
+            }
+            
             return uri.startsWith("/expositor") ||
-                   uri.startsWith("/solicitudes/nueva") ||
-                   uri.startsWith("/solicitudes/mis-solicitudes") ||
-                   uri.startsWith("/solicitudes/guardar") ||
-                   uri.matches("^/solicitudes/[^/]+/cancelar$");
+                   uri.startsWith("/solicitudes/nueva") ||  // Ver formulario de solicitud
+                   uri.startsWith("/solicitudes/mis-solicitudes") ||  // Ver sus solicitudes
+                   uri.startsWith("/solicitudes/guardar") ||  // Guardar solicitud
+                   uri.matches("^/solicitudes/[^/]+/cancelar$");  // Cancelar sus solicitudes
         }
         
         // EVALUADOR

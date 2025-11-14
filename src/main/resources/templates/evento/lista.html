@@ -12,8 +12,19 @@
 </head>
 <body>
 
-<!-- Navbar -->
-<div th:replace="~{fragments/navbar :: navbar('Organizador', '/organizador/panelOrganizador')}"></div>
+<!-- Navbar dinámico según rol -->
+<nav th:replace="~{fragments/navbar :: navbar(
+    ${session.rol == 'ORGANIZADOR' ? 'Organizador' : 
+     session.rol == 'EXPOSITOR' ? 'Expositor' : 
+     session.rol == 'ADMINISTRADOR' ? 'Administrador' : 
+     session.rol == 'VISITANTE' ? 'Visitante' : 
+     session.rol == 'EVALUADOR' ? 'Evaluador' : 'Usuario'}, 
+    ${session.rol == 'ORGANIZADOR' ? '/organizador/panelOrganizador' : 
+     session.rol == 'EXPOSITOR' ? '/expositor/panelExpositor' : 
+     session.rol == 'ADMINISTRADOR' ? '/admin/panelAdmin' : 
+     session.rol == 'VISITANTE' ? '/visitante/panelVisitante' : 
+     session.rol == 'EVALUADOR' ? '/evaluador/panelEvaluador' : '/'})}">
+</nav>
 
 <div class="container mt-4 mb-5">
     <!-- Mensajes -->
@@ -28,10 +39,64 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Gestión de Eventos</h2>
-                <a th:href="@{/eventos/nuevo}" class="btn btn-primary">
+                <!-- Solo organizadores pueden crear eventos -->
+                <a th:if="${session.rol == 'ORGANIZADOR'}" th:href="@{/eventos/nuevo}" class="btn btn-primary">
                     <i class="bi bi-plus-circle me-2"></i>Nuevo Evento
                 </a>
+                <span th:if="${session.rol != 'ORGANIZADOR'}" class="badge bg-info text-dark">
+                    <i class="bi bi-eye me-1"></i>Vista de solo lectura
+                </span>
             </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Búsqueda -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-search me-2"></i>Buscar y Filtrar Eventos</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/eventos/buscar}" method="get">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="nombre" class="form-label">Nombre del Evento</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               placeholder="Buscar por nombre..." th:value="${param.nombre}">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="fechaInicio" class="form-label">Fecha Desde</label>
+                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" 
+                               th:value="${param.fechaInicio}">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="fechaFin" class="form-label">Fecha Hasta</label>
+                        <input type="date" class="form-control" id="fechaFin" name="fechaFin" 
+                               th:value="${param.fechaFin}">
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label for="estado" class="form-label">Estado</label>
+                        <select class="form-select" id="estado" name="estado">
+                            <option value="">Todos</option>
+                            <option value="ACTIVO" th:selected="${param.estado == 'ACTIVO'}">Activo</option>
+                            <option value="EN_PLANIFICACION" th:selected="${param.estado == 'EN_PLANIFICACION'}">En Planificación</option>
+                            <option value="FINALIZADO" th:selected="${param.estado == 'FINALIZADO'}">Finalizado</option>
+                            <option value="CANCELADO" th:selected="${param.estado == 'CANCELADO'}">Cancelado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search me-2"></i>Buscar
+                        </button>
+                        <a th:href="@{/eventos}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Limpiar
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -43,7 +108,7 @@
                     <thead>
                         <tr>
                             <th><i class="bi bi-tag me-1"></i>Nombre</th>
-                            <th><i class="bi bi-geo-alt me-1"></i>Lugar</th>
+                            <th><i class="bi bi-geo-alt me-1"></i>Ubicación</th>
                             <th class="text-center"><i class="bi bi-calendar-check me-1"></i>Fecha Inicio</th>
                             <th class="text-center"><i class="bi bi-calendar-x me-1"></i>Fecha Fin</th>
                             <th class="text-center"><i class="bi bi-check-circle me-1"></i>Estado</th>
@@ -55,7 +120,18 @@
                     <tbody>
                         <tr th:each="evento : ${eventos}">
                             <td><strong th:text="${evento.nombre}"></strong></td>
-                            <td><small class="text-muted" th:text="${evento.lugar}"></small></td>
+                            <td>
+                                <small style="color: #000 !important; font-weight: 600 !important; font-size: 0.9rem !important;">
+                                    <i class="bi bi-pin-map-fill text-danger me-1"></i>
+                                    <span th:if="${evento.latitud != null && evento.longitud != null}">
+                                        <span th:text="${#numbers.formatDecimal(evento.latitud, 1, 4)}" style="color: #000 !important;"></span>,
+                                        <span th:text="${#numbers.formatDecimal(evento.longitud, 1, 4)}" style="color: #000 !important;"></span>
+                                    </span>
+                                    <span th:if="${evento.latitud == null || evento.longitud == null}" class="text-warning">
+                                        Sin ubicación
+                                    </span>
+                                </small>
+                            </td>
                             <td class="text-center"><span class="badge bg-light text-dark" th:text="${evento.fechaInicio}"></span></td>
                             <td class="text-center"><span class="badge bg-light text-dark" th:text="${evento.fechaFin}"></span></td>
                             <td class="text-center">
@@ -68,8 +144,12 @@
                             </td>
                             <td class="text-center">
                                 <span class="badge bg-primary" th:text="${evento.cantidadStandsAsociados}"></span>
-                                <a th:href="@{/eventos/{id}/stands(id=${evento.id})}" class="btn btn-sm btn-outline-info ms-2" title="Ver stands">
-                                    <i class="bi bi-eye"></i>
+                                <!-- Solo organizadores pueden gestionar stands de eventos -->
+                                <a th:if="${session.rol == 'ORGANIZADOR'}" 
+                                   th:href="@{/eventos/{id}/stands(id=${evento.id})}" 
+                                   class="btn btn-sm btn-outline-info ms-2" 
+                                   title="Gestionar stands">
+                                    <i class="bi bi-gear"></i>
                                 </a>
                             </td>
                             <td class="text-center">
@@ -83,7 +163,8 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <div class="btn-group btn-group-sm" role="group">
+                                <!-- Solo organizadores pueden editar/eliminar -->
+                                <div th:if="${session.rol == 'ORGANIZADOR'}" class="btn-group btn-group-sm" role="group">
                                     <a th:href="@{/eventos/editar/{id}(id=${evento.id})}" class="btn btn-outline-primary" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
@@ -94,6 +175,10 @@
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
+                                <!-- Otros roles solo ven el evento -->
+                                <span th:if="${session.rol != 'ORGANIZADOR'}" class="badge bg-secondary">
+                                    <i class="bi bi-eye-slash"></i> Solo lectura
+                                </span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(eventos)}">

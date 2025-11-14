@@ -90,11 +90,17 @@
                         </small>
                     </div>
 
-                    <!-- Lugar -->
+                    <!-- Ubicación -->
                     <div class="mb-2">
                         <i class="bi bi-geo-alt text-danger"></i>
-                        <strong>Lugar:</strong>
-                        <span th:text="${evento.lugar}"></span>
+                        <strong>Ubicación:</strong>
+                        <span th:if="${evento.latitud != null && evento.longitud != null}">
+                            <span th:text="${#numbers.formatDecimal(evento.latitud, 1, 4)}"></span>,
+                            <span th:text="${#numbers.formatDecimal(evento.longitud, 1, 4)}"></span>
+                        </span>
+                        <span th:if="${evento.latitud == null || evento.longitud == null}" class="text-warning">
+                            Sin ubicación
+                        </span>
                     </div>
 
                     <!-- Capacidad -->

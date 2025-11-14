@@ -6,8 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+    <style>
+        /* Estilos mejorados para el select */
+        .select-container {
+            position: relative;
+        }
+        
+        .select-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #FFD600;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        #standId {
+            padding-left: 3.5rem !important;
+            padding-right: 3rem !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            height: 60px !important;
+            background: rgba(255, 214, 0, 0.1) !important;
+            border: 2px solid rgba(255, 214, 0, 0.4) !important;
+            color: #FFD600 !important;
+            border-radius: 16px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+        
+        #standId option {
+            background: #1a1a2e !important;
+            color: #fff !important;
+            padding: 1rem !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+        }
+        
+        #standId option:first-child {
+            color: rgba(255, 255, 255, 0.5) !important;
+            font-style: italic !important;
+        }
+        
+        #standId:hover {
+            background: rgba(255, 214, 0, 0.15) !important;
+            border-color: rgba(255, 214, 0, 0.6) !important;
+            box-shadow: 0 0 20px rgba(255, 214, 0, 0.3) !important;
+        }
+        
+        #standId:focus {
+            background: rgba(255, 214, 0, 0.2) !important;
+            border-color: #FFD600 !important;
+            box-shadow: 0 0 30px rgba(255, 214, 0, 0.5) !important;
+            color: #fff !important;
+            outline: none !important;
+        }
+        
+        #standId:valid:not([value=""]) {
+            color: #fff !important;
+            background: rgba(40, 167, 69, 0.15) !important;
+            border-color: rgba(40, 167, 69, 0.5) !important;
+        }
+        
+        .form-label-custom {
+            color: #FFD600 !important;
+            font-weight: 600 !important;
+            font-size: 1.1rem !important;
+            margin-bottom: 1rem !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .required-badge {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: #fff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
+<div th:replace="~{fragments/navbar :: navbar('Expositor', '/expositor/panelExpositor')}"></div>
 
 <div class="container mt-5">
     <!-- Mensajes -->
@@ -18,14 +104,23 @@
 
     <!-- Información del Evento -->
     <div class="card mb-4 shadow">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="bi bi-calendar-event"></i> Solicitud de Stand</h4>
+        <div class="card-header">
+            <h4 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Solicitud de Stand</h4>
         </div>
         <div class="card-body">
             <div class="row" th:if="${evento}">
                 <div class="col-md-6">
                     <p><strong>Evento:</strong> <span th:text="${evento.nombre}"></span></p>
-                    <p><strong>Lugar:</strong> <span th:text="${evento.lugar}"></span></p>
+                    <p><strong>Ubicación:</strong> 
+                        <span th:if="${evento.latitud != null && evento.longitud != null}">
+                            <i class="bi bi-pin-map-fill text-danger"></i>
+                            <span th:text="${#numbers.formatDecimal(evento.latitud, 1, 4)}"></span>,
+                            <span th:text="${#numbers.formatDecimal(evento.longitud, 1, 4)}"></span>
+                        </span>
+                        <span th:if="${evento.latitud == null || evento.longitud == null}" class="text-warning">
+                            Sin ubicación
+                        </span>
+                    </p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Fechas:</strong> 
@@ -45,23 +140,31 @@
 
     <!-- Formulario de Solicitud -->
     <div class="card shadow">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Información de la Solicitud</h5>
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Información de la Solicitud</h5>
         </div>
         <div class="card-body">
             <form th:action="@{/solicitudes/guardar}" th:object="${solicitud}" method="post">
                 <input type="hidden" th:field="*{eventoId}" />
 
-                <div class="mb-3">
-                    <label for="standId" class="form-label">Seleccione un Stand <span class="text-danger">*</span></label>
-                    <select th:field="*{standId}" id="standId" class="form-select" required>
-                        <option value="">-- Seleccione un stand --</option>
-                        <option th:each="stand : ${standsDisponibles}" 
-                                th:value="${stand.id}" 
-                                th:text="${stand.numero + ' - ' + stand.nombre + ' (' + stand.ubicacion + ')'}">
-                        </option>
-                    </select>
-                    <small class="form-text text-muted">
+                <div class="mb-4">
+                    <label for="standId" class="form-label-custom">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                        Seleccione un Stand
+                        <span class="required-badge">REQUERIDO</span>
+                    </label>
+                    <div class="select-container">
+                        <i class="bi bi-shop select-icon"></i>
+                        <select th:field="*{standId}" id="standId" class="form-select" required>
+                            <option value="">🔽 Haga clic para seleccionar un stand disponible</option>
+                            <option th:each="stand : ${standsDisponibles}" 
+                                    th:value="${stand.id}" 
+                                    th:text="'🏪 Stand ' + ${stand.numero} + ' - ' + ${stand.nombre} + ' (' + ${stand.ubicacion} + ')'">
+                            </option>
+                        </select>
+                    </div>
+                    <small class="form-text" style="color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; margin-top: 0.5rem; display: block;">
+                        <i class="bi bi-info-circle me-1"></i>
                         Solo se muestran stands disponibles o reservados del evento
                     </small>
                 </div>
