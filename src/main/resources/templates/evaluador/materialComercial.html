@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluar Material Comercial - ExpoGest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+    <style>
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 214, 0, 0.3) !important;
+        }
+        
+        .hover-zoom {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .hover-zoom:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-check:checked + .btn {
+            background: linear-gradient(135deg, #FFD600, #ff9800);
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('Evaluador', '/evaluador/panelEvaluador')}"></nav>
+
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h2 class="mb-0">
+                <i class="bi bi-clipboard-check me-2"></i>
+                Evaluar Material Comercial
+            </h2>
+        </div>
+    </div>
+
+    <!-- Información del Stand y Expositor -->
+    <div class="card mb-4 shadow-sm" th:if="${stand != null}">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <img th:if="${material != null and material.logoUrl != null}" 
+                         th:src="${material.logoUrl}" alt="Logo" 
+                         class="img-fluid rounded-3 shadow-sm mb-3" 
+                         style="max-height: 150px; object-fit: contain;"
+                         onerror="this.src='https://via.placeholder.com/150?text=Sin+Logo'">
+                    <div th:if="${material == null or material.logoUrl == null}" class="text-muted">
+                        <i class="bi bi-image" style="font-size: 5rem;"></i>
+                        <p>Sin logo</p>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <h3 class="text-warning mb-3">
+                        <i class="bi bi-shop"></i> 
+                        Stand: <span th:text="${stand.numero}"></span>
+                    </h3>
+                    <p class="mb-2">
+                        <i class="bi bi-person-badge text-primary me-1"></i> 
+                        <strong>Expositor:</strong> 
+                        <span th:text="${expositor != null ? expositor.nombre : 'Sin asignar'}"></span>
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-envelope text-primary me-1"></i> 
+                        <strong>Contacto:</strong> 
+                        <span th:text="${expositor != null ? expositor.correo : 'N/A'}"></span>
+                    </p>
+                    <p class="mb-0">
+                        <i class="bi bi-calendar-event text-primary me-1"></i> 
+                        <strong>Evento:</strong> 
+                        <span th:text="${evento != null ? evento.nombre : 'N/A'}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sin material -->
+    <div class="alert alert-warning" th:if="${material == null}">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Este expositor aún no ha subido su material comercial.
+        <div class="mt-3">
+            <a th:href="@{/evaluador/stands-evaluar}" class="btn btn-outline-warning">
+                <i class="bi bi-arrow-left me-2"></i>Volver a Stands
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${material != null}">
+        <!-- Descripción Comercial -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">
+                    <i class="bi bi-file-text text-primary me-2"></i> 
+                    Descripción Comercial
+                </h4>
+            </div>
+            <div class="card-body">
+                <p th:text="${material.descripcion}" class="lead mb-0" style="text-align: justify;"></p>
+            </div>
+        </div>
+
+        <!-- Catálogos PDF -->
+        <div class="card mb-4 shadow-sm" th:if="${material.catalogoUrls != null and !material.catalogoUrls.isEmpty()}">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">
+                    <i class="bi bi-file-pdf text-danger me-2"></i> 
+                    Catálogos Disponibles
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3" th:each="catalogo, iterStat : ${material.catalogoUrls}">
+                        <div class="card h-100 shadow-sm hover-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-pdf-fill text-danger" style="font-size: 3rem;"></i>
+                                <h6 class="mt-3 mb-3">Catálogo [[${iterStat.count}]]</h6>
+                                <a th:href="${catalogo}" target="_blank" class="btn btn-danger">
+                                    <i class="bi bi-download me-2"></i>Descargar PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multimedia -->
+        <div class="card mb-4 shadow-sm" th:if="${material.multimediaUrls != null and !material.multimediaUrls.isEmpty()}">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">
+                    <i class="bi bi-play-circle text-primary me-2"></i> 
+                    Galería Multimedia
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4" th:each="media : ${material.multimediaUrls}">
+                        <!-- YouTube -->
+                        <div th:if="${#strings.contains(media, 'youtube.com') or #strings.contains(media, 'youtu.be')}">
+                            <div class="ratio ratio-16x9">
+                                <iframe th:src="${#strings.replace(#strings.replace(media, 'watch?v=', 'embed/'), 'youtu.be/', 'youtube.com/embed/')}" 
+                                        allowfullscreen class="rounded-3 shadow"></iframe>
+                            </div>
+                        </div>
+                        
+                        <!-- Video MP4 -->
+                        <div th:if="${#strings.endsWith(media, '.mp4') or #strings.endsWith(media, '.webm')}">
+                            <video controls class="w-100 rounded-3 shadow">
+                                <source th:src="${media}" type="video/mp4">
+                                Tu navegador no soporta videos.
+                            </video>
+                        </div>
+                        
+                        <!-- Imágenes -->
+                        <div th:if="${#strings.endsWith(media, '.jpg') or #strings.endsWith(media, '.jpeg') or #strings.endsWith(media, '.png') or #strings.endsWith(media, '.gif')}">
+                            <img th:src="${media}" alt="Multimedia" class="img-fluid rounded-3 shadow hover-zoom">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Evaluación -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-star-fill me-2"></i> 
+                    Evaluación del Material
+                </h4>
+            </div>
+            <div class="card-body">
+                <form action="#" method="post">
+                    <input type="hidden" name="materialId" th:value="${material.id}">
+                    <input type="hidden" name="standId" th:value="${stand.id}">
+                    
+                    <!-- Calificación -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-star me-1"></i> Calificación General *
+                        </label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="calificacion" id="cal1" value="1" required>
+                            <label class="btn btn-outline-danger" for="cal1">1 ⭐</label>
+                            
+                            <input type="radio" class="btn-check" name="calificacion" id="cal2" value="2">
+                            <label class="btn btn-outline-warning" for="cal2">2 ⭐</label>
+                            
+                            <input type="radio" class="btn-check" name="calificacion" id="cal3" value="3">
+                            <label class="btn btn-outline-info" for="cal3">3 ⭐</label>
+                            
+                            <input type="radio" class="btn-check" name="calificacion" id="cal4" value="4">
+                            <label class="btn btn-outline-primary" for="cal4">4 ⭐</label>
+                            
+                            <input type="radio" class="btn-check" name="calificacion" id="cal5" value="5">
+                            <label class="btn btn-outline-success" for="cal5">5 ⭐</label>
+                        </div>
+                    </div>
+
+                    <!-- Comentarios -->
+                    <div class="mb-4">
+                        <label for="comentarios" class="form-label fw-bold">
+                            <i class="bi bi-chat-left-text me-1"></i> Comentarios y Observaciones *
+                        </label>
+                        <textarea class="form-control" id="comentarios" name="comentarios" rows="5" 
+                                  placeholder="Ingresa tus observaciones sobre el material comercial..."
+                                  required></textarea>
+                    </div>
+
+                    <!-- Aspectos Evaluados -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-check-circle me-1"></i> Calidad del Material *
+                            </label>
+                            <select class="form-select" name="calidadMaterial" required>
+                                <option value="">Selecciona...</option>
+                                <option value="EXCELENTE">⭐⭐⭐⭐⭐ Excelente</option>
+                                <option value="BUENO">⭐⭐⭐⭐ Bueno</option>
+                                <option value="REGULAR">⭐⭐⭐ Regular</option>
+                                <option value="DEFICIENTE">⭐⭐ Deficiente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-eye me-1"></i> Presentación Visual *
+                            </label>
+                            <select class="form-select" name="presentacionVisual" required>
+                                <option value="">Selecciona...</option>
+                                <option value="EXCELENTE">⭐⭐⭐⭐⭐ Excelente</option>
+                                <option value="BUENO">⭐⭐⭐⭐ Bueno</option>
+                                <option value="REGULAR">⭐⭐⭐ Regular</option>
+                                <option value="DEFICIENTE">⭐⭐ Deficiente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success btn-lg flex-grow-1">
+                            <i class="bi bi-check-circle me-2"></i>Guardar Evaluación
+                        </button>
+                        <a th:href="@{/evaluador/stands-evaluar}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>Volver
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

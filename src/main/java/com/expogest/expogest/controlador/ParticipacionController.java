@@ -1,41 +1,13 @@
 package com.expogest.expogest.controlador;
 
-import com.expogest.expogest.entidades.Participacion;
-import com.expogest.expogest.repository.ParticipacionRepository;
-import com.expogest.expogest.repository.UsuarioRepository;
-import com.expogest.expogest.repository.EventoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+// DEPRECADO: Este controlador ya no se usa, ahora usamos ParticipacionEventoController
+// Se mantiene vacío solo para evitar errores de compilación si hay referencias
 @Controller
-@RequestMapping("/visitante/inscripcion")
+@RequestMapping("/participaciones-legacy")
 public class ParticipacionController {
-
-    @Autowired
-    private ParticipacionRepository participacionRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private EventoRepository eventoRepository;
-
-    @GetMapping
-    public String mostrarFormulario(Model model) {
-        model.addAttribute("participacion", new Participacion());
-        model.addAttribute("usuarios", usuarioRepository.findAll()); // O solo los de rol Visitante
-        model.addAttribute("eventos", eventoRepository.findAll());
-        return "visitante/inscripcion";
-    }
-
-    @PostMapping("/guardar")
-    public String guardarParticipacion(@ModelAttribute Participacion participacion) {
-        participacion.setTipoParticipacion("Visitante");
-        participacionRepository.save(participacion);
-        return "redirect:/visitante/visitantes";
-    }
-    
-    
-     }
-
+    // Controlador vacío - usar ParticipacionEventoController en su lugar
+}
     

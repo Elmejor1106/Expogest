@@ -54,17 +54,25 @@ public class AuthFilter implements Filter {
         return uri.equals("/") || 
                uri.equals("/login") || 
                uri.equals("/registro") ||
+               uri.equals("/acceso-denegado") ||
                uri.equals("/en-construccion") ||
                uri.startsWith("/css") || 
                uri.startsWith("/js") || 
                uri.startsWith("/images") ||
-               uri.startsWith("/static");
+               uri.startsWith("/static") ||
+               uri.startsWith("/uploads") ||  // Archivos subidos (públicos para evaluadores y visitantes)
+               uri.startsWith("/eventos") ||  // Eventos públicos para todos
+               uri.startsWith("/cronograma/ver");  // Cronograma público para todos
     }
     
     private boolean tienePermiso(String uri, String rol, String metodo) {
         // ADMIN tiene acceso a todo
         if ("ADMINISTRADOR".equals(rol)) {
-            return true;
+            return uri.startsWith("/admin") ||
+                   uri.startsWith("/eventos") ||
+                   uri.startsWith("/usuarios") ||
+                   uri.startsWith("/api") ||
+                   true;  // Acceso total para el admin
         }
         
         // ORGANIZADOR
@@ -72,6 +80,7 @@ public class AuthFilter implements Filter {
             return uri.startsWith("/organizador") ||
                    uri.startsWith("/eventos") ||
                    uri.startsWith("/stands") ||
+                   uri.startsWith("/cronograma") ||  // Gestionar cronograma
                    uri.startsWith("/cronogramas") ||
                    (uri.startsWith("/solicitudes") && 
                     !uri.contains("/mis-solicitudes") && 
@@ -81,27 +90,31 @@ public class AuthFilter implements Filter {
         
         // EXPOSITOR - Puede ver eventos activos y solicitar stands
         if ("EXPOSITOR".equals(rol)) {
-            // Permitir ver eventos solo en modo lectura (GET)
-            if (uri.startsWith("/eventos") && "GET".equals(metodo)) {
-                return true;
-            }
-            
             return uri.startsWith("/expositor") ||
+                   uri.startsWith("/eventos") ||  // Puede ver eventos (ya es público)
+                   uri.startsWith("/cronograma/ver") ||  // Puede ver cronograma público
                    uri.startsWith("/solicitudes/nueva") ||  // Ver formulario de solicitud
                    uri.startsWith("/solicitudes/mis-solicitudes") ||  // Ver sus solicitudes
                    uri.startsWith("/solicitudes/guardar") ||  // Guardar solicitud
+                   uri.startsWith("/material-comercial") ||  // Gestionar su material comercial
                    uri.matches("^/solicitudes/[^/]+/cancelar$");  // Cancelar sus solicitudes
         }
         
         // EVALUADOR
         if ("EVALUADOR".equals(rol)) {
             return uri.startsWith("/evaluador") ||
+                   uri.startsWith("/eventos") ||  // Puede ver eventos (ya es público)
+                   uri.startsWith("/cronograma/ver") ||  // Puede ver cronograma público
+                   uri.startsWith("/material-comercial/ver/") ||  // Ver material comercial de stands
                    uri.startsWith("/evaluaciones");
         }
         
         // VISITANTE
         if ("VISITANTE".equals(rol)) {
             return uri.startsWith("/visitante") ||
+                   uri.startsWith("/eventos") ||  // Puede ver eventos (ya es público)
+                   uri.startsWith("/cronograma/ver") ||  // Puede ver cronograma público
+                   uri.startsWith("/material-comercial/ver/") ||  // Ver material comercial de stands
                    uri.startsWith("/participaciones");
         }
         

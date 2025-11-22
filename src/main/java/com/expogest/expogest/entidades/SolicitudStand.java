@@ -1,4 +1,4 @@
-package com.expogest.expogest.entidades;
+    package com.expogest.expogest.entidades;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

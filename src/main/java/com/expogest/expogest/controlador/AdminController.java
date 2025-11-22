@@ -51,11 +51,21 @@ public class AdminController {
     @PostMapping("/usuarios/guardar")
     public String guardarUsuario(@ModelAttribute("usuario") Usuario usuario, RedirectAttributes redirectAttributes) {
         try {
-            // Validar que el correo no esté duplicado (excepto si es el mismo usuario)
-            Optional<Usuario> existente = usuarioRepository.findByCorreo(usuario.getCorreo());
-            if (existente.isPresent() && !existente.get().getId().equals(usuario.getId())) {
-                redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
-                return "redirect:/admin/usuarios/nuevo";
+            // Si es un nuevo usuario (sin ID), verificar que el correo no exista
+            if (usuario.getId() == null || usuario.getId().isEmpty()) {
+                if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+                    redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
+                    return "redirect:/admin/usuarios/nuevo";
+                }
+                // Limpiar el ID para que MongoDB genere uno nuevo
+                usuario.setId(null);
+            } else {
+                // Si es una edición, validar que el correo no esté duplicado (excepto si es el mismo usuario)
+                Optional<Usuario> existente = usuarioRepository.findByCorreo(usuario.getCorreo());
+                if (existente.isPresent() && !existente.get().getId().equals(usuario.getId())) {
+                    redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
+                    return "redirect:/admin/usuarios/editar/" + usuario.getId();
+                }
             }
             
             usuarioRepository.save(usuario);
@@ -69,8 +79,12 @@ public class AdminController {
     @GetMapping("/usuarios/eliminar/{id}")
     public String eliminarUsuario(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
         try {
-            Optional<Usuario> usuario = usuarioRepository.findById(id);
-            if (usuario.isPresent()) {
+            if (id == null || id.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "ID de usuario inválido");
+                return "redirect:/admin/usuarios";
+            }
+            
+            if (usuarioRepository.existsById(id)) {
                 usuarioRepository.deleteById(id);
                 redirectAttributes.addFlashAttribute("success", "Usuario eliminado correctamente");
             } else {

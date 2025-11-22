@@ -169,6 +169,17 @@ public class EventoService {
     public List<Stand> obtenerStandsDelEvento(String eventoId) {
         return standRepository.findByEventoId(eventoId);
     }
+    
+    /**
+     * Obtener stands disponibles que no están asociados a ningún evento
+     * o que están asociados al evento actual pero no están en la lista de stands del evento
+     */
+    public List<Stand> obtenerStandsDisponiblesParaAsociar(String eventoId) {
+        // Obtener todos los stands que no tienen eventoId o tienen el eventoId del evento actual
+        return standRepository.findAll().stream()
+            .filter(stand -> stand.getEventoId() == null || stand.getEventoId().isEmpty())
+            .toList();
+    }
 
     public List<Evento> obtenerEventosActivos() {
         return eventoRepository.findByEstado(EstadoEvento.ACTIVO);

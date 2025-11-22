@@ -184,11 +184,20 @@ public class SolicitudStandController {
      * Mis solicitudes (expositor)
      */
     @GetMapping("/mis-solicitudes")
-    public String misSolicitudes(HttpSession session, Model model) {
+    public String misSolicitudes(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        String rol = (String) session.getAttribute("rol");
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        
         if (usuario == null) {
             return "redirect:/login";
         }
+        
+        if (!"EXPOSITOR".equals(rol)) {
+            redirectAttributes.addFlashAttribute("mensaje", "Solo los expositores pueden ver solicitudes");
+            redirectAttributes.addFlashAttribute("tipo", "danger");
+            return "redirect:/";
+        }
+        
         model.addAttribute("solicitudes", solicitudService.obtenerPorExpositor(usuario.getId()));
         return "solicitud/misSolicitudes";
     }

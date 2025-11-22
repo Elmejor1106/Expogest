@@ -2,75 +2,148 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Cronograma</title>
+    <title>Gestión de Cronograma - ExpoGest</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
 </head>
-<body class="bg-light">
+<body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">GestExpo</a>
-            <div class="ms-auto">
-                <a th:href="@{/organizador/panelOrganizador}" class="btn btn-outline-light me-2">
-                    <i class="bi bi-arrow-left-circle"></i> Panel
-                </a>
-                <a th:href="@{/cronograma/nuevo}" class="btn btn-light text-success fw-bold">
-                    <i class="bi bi-plus-circle"></i> Nueva Actividad
+<nav th:replace="~{fragments/navbar :: navbar('Organizador', '/organizador/panelOrganizador')}"></nav>
+
+<div class="container mt-4 mb-5">
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show'" role="alert">
+        <i th:class="${tipo == 'success' ? 'bi bi-check-circle-fill' : 'bi bi-exclamation-triangle-fill'} + ' me-2'"></i>
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0">
+                        <i class="bi bi-calendar-week me-2"></i>
+                        Cronograma del Evento
+                    </h2>
+                    <small th:if="${evento != null}" th:text="${evento.nombre}"></small>
+                </div>
+                <a th:if="${evento != null}" 
+                   th:href="@{/cronograma/nuevo/{id}(id=${evento.id})}" 
+                   class="btn btn-warning">
+                    <i class="bi bi-plus-circle me-2"></i>Nueva Actividad
                 </a>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- Contenido principal -->
-    <div class="container mt-5">
-        <h2 class="mb-4 text-center text-success">Gestión del Cronograma</h2>
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle shadow-sm">
-                <thead class="table-success text-center">
-                    <tr>
-                        <th>ID</th>
-                        <th>Actividad</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Evento</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="c : ${cronogramas}">
-                        <td th:text="${c.id}"></td>
-                        <td th:text="${c.actividad}"></td>
-                        <td th:text="${c.fecha}"></td>
-                        <td th:text="${c.hora}"></td>
-                        <td th:text="${c.evento.nombre}"></td>
-                        <td class="text-center">
-                            <a th:href="@{/cronograma/editar/{id}(id=${c.id})}" class="btn btn-sm btn-warning me-1">
-                                <i class="bi bi-pencil-square"></i> Editar
-                            </a>
-                            <a th:href="@{/cronograma/eliminar/{id}(id=${c.id})}" 
-                               class="btn btn-sm btn-danger"
-                               onclick="return confirm('¿Estás seguro de eliminar esta actividad?');">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <!-- Tabla de Actividades -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-calendar me-1"></i>Fecha y Hora</th>
+                            <th><i class="bi bi-card-text me-1"></i>Actividad</th>
+                            <th class="text-center"><i class="bi bi-tag me-1"></i>Tipo</th>
+                            <th class="text-center"><i class="bi bi-clock me-1"></i>Duración</th>
+                            <th><i class="bi bi-geo-alt me-1"></i>Ubicación</th>
+                            <th class="text-center"><i class="bi bi-people me-1"></i>Capacidad</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="actividad : ${actividades}">
+                            <td>
+                                <strong th:text="${#temporals.format(actividad.fechaHora, 'dd/MM/yyyy')}"></strong><br>
+                                <small class="text-muted" th:text="${#temporals.format(actividad.fechaHora, 'HH:mm')} + ' hrs'"></small>
+                            </td>
+                            <td>
+                                <strong th:text="${actividad.titulo}"></strong><br>
+                                <small class="text-muted" th:text="${actividad.descripcion}"></small>
+                            </td>
+                            <td class="text-center">
+                                <span th:switch="${actividad.tipo.toString()}" class="badge">
+                                    <span th:case="'CONFERENCIA'" class="badge bg-primary">📊 Conferencia</span>
+                                    <span th:case="'TALLER'" class="badge bg-success">🔧 Taller</span>
+                                    <span th:case="'NETWORKING'" class="badge bg-info">🤝 Networking</span>
+                                    <span th:case="'PRESENTACION'" class="badge bg-warning text-dark">📢 Presentación</span>
+                                    <span th:case="'PANEL'" class="badge bg-secondary">💬 Panel</span>
+                                    <span th:case="'PANEL_DISCUSION'" class="badge bg-secondary">💬 Panel de Discusión</span>
+                                    <span th:case="'OTRO'" class="badge bg-dark">📌 Otro</span>
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark" th:text="${actividad.duracionMinutos} + ' min'"></span>
+                            </td>
+                            <td>
+                                <small>
+                                    <i class="bi bi-pin-map text-danger me-1"></i>
+                                    <span th:text="${actividad.ubicacion}"></span>
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <span th:if="${actividad.capacidadMaxima != null}">
+                                    <strong th:text="${actividad.inscritos}"></strong> / 
+                                    <span th:text="${actividad.capacidadMaxima}"></span>
+                                    <br>
+                                    <span th:if="${actividad.tieneCapacidadDisponible()}" 
+                                          class="badge bg-success">Disponible</span>
+                                    <span th:unless="${actividad.tieneCapacidadDisponible()}" 
+                                          class="badge bg-danger">Completo</span>
+                                </span>
+                                <span th:if="${actividad.capacidadMaxima == null}" class="text-muted">
+                                    <small>∞ Ilimitado</small>
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a th:href="@{/cronograma/editar/{id}(id=${actividad.id})}" 
+                                       class="btn btn-outline-primary" 
+                                       title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a th:href="@{/cronograma/eliminar/{id}(id=${actividad.id})}"
+                                       class="btn btn-outline-danger"
+                                       title="Eliminar"
+                                       onclick="return confirm('¿Está seguro de eliminar esta actividad?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(actividades)}">
+                            <td colspan="7" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="bi bi-calendar-x display-1 d-block mb-3"></i>
+                                    <p class="lead">No hay actividades programadas aún</p>
+                                    <a th:if="${evento != null}" 
+                                       th:href="@{/cronograma/nuevo/{id}(id=${evento.id})}" 
+                                       class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>Crear la primera actividad
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-success text-white text-center py-3 mt-5">
-        <small>© 2025 GestExpo. Cronograma de eventos institucionales.</small>
-    </footer>
+    <!-- Botón volver -->
+    <div class="mt-4">
+        <a th:href="@{/eventos}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Volver a Eventos
+        </a>
+    </div>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

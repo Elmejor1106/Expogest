@@ -244,6 +244,20 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Limpiar todo cuando se cierre cualquier modal
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('hidden.bs.modal', function() {
+                // Eliminar todos los backdrops
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                // Restaurar body
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            });
+        });
+    });
 </script>
 </body>
 </html>

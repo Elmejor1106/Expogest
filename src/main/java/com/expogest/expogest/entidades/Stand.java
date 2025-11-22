@@ -15,7 +15,6 @@ public class Stand {
     private String nombre;
     private String ubicacion;
     private String dimensiones; // Ej: "3x3 metros"
-    private Double precio;
     private EstadoStand estado;
     private String eventoId; // ID del evento al que está asociado
     private String expositorId; // ID del expositor asignado
@@ -65,13 +64,6 @@ public class Stand {
     }
     public void setDimensiones(String dimensiones) {
         this.dimensiones = dimensiones;
-    }
-
-    public Double getPrecio() {
-        return precio;
-    }
-    public void setPrecio(Double precio) {
-        this.precio = precio;
     }
 
     public EstadoStand getEstado() {

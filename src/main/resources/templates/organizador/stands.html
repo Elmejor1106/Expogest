@@ -58,7 +58,6 @@
                             <th><i class="bi bi-tag me-1"></i>Nombre</th>
                             <th><i class="bi bi-geo-alt me-1"></i>Ubicación</th>
                             <th><i class="bi bi-rulers me-1"></i>Dimensiones</th>
-                            <th><i class="bi bi-currency-dollar me-1"></i>Precio</th>
                             <th class="text-center"><i class="bi bi-check-circle me-1"></i>Estado</th>
                             <th class="text-center"><i class="bi bi-calendar-event me-1"></i>Evento</th>
                             <th class="text-center"><i class="bi bi-person me-1"></i>Expositor</th>
@@ -71,7 +70,6 @@
                             <td th:text="${stand.nombre}"></td>
                             <td><small class="text-muted" th:text="${stand.ubicacion}"></small></td>
                             <td class="text-center"><span class="badge bg-light text-dark" th:text="${stand.dimensiones}"></span></td>
-                            <td class="text-end"><strong th:text="${stand.precio != null ? '$' + stand.precio : 'N/A'}"></strong></td>
                             <td class="text-center">
                                 <span th:switch="${stand.estado.toString()}" class="badge-custom">
                                     <span th:case="'DISPONIBLE'" class="badge bg-success">✓ Disponible</span>

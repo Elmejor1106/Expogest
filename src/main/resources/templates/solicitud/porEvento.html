@@ -274,6 +274,20 @@
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl)
     })
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Limpiar todo cuando se cierre cualquier modal
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('hidden.bs.modal', function() {
+                // Eliminar todos los backdrops
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                // Restaurar body
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            });
+        });
+    });
 
     // Filtrar por estado
     function filtrarPorEstado(estado) {

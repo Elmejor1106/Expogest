@@ -151,6 +151,13 @@
                                    title="Gestionar stands">
                                     <i class="bi bi-gear"></i>
                                 </a>
+                                <!-- Visitantes/Evaluadores pueden ver stands públicos -->
+                                <a th:if="${session.rol != 'ORGANIZADOR' && evento.cantidadStandsAsociados > 0}" 
+                                   th:href="@{/eventos/{id}/stands(id=${evento.id})}" 
+                                   class="btn btn-sm btn-outline-primary ms-2" 
+                                   title="Ver stands">
+                                    <i class="bi bi-eye"></i>
+                                </a>
                             </td>
                             <td class="text-center">
                                 <span th:if="${evento.capacidadMaximaStands != null}" 

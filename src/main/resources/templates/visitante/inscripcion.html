@@ -2,105 +2,70 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inscripción a Evento</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #17a2b8;
-            color: white;
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 1.8rem;
-        }
-
-        nav {
-            background-color: #ffffff;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        }
-
-        nav a {
-            color: #17a2b8;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1rem;
-            margin: 0 10px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #11707d;
-        }
-
-        .form-container {
-            max-width: 500px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .form-container label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .form-container select {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-        }
-
-        .form-container button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #17a2b8;
-            color: white;
-            font-size: 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .form-container button:hover {
-            background-color: #11707d;
-        }
-    </style>
+    <title>Inscripción a Evento - ExpoGest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
 </head>
 <body>
-    <header>Inscribirse a Evento</header>
 
-    <nav>
-        <a th:href="@{/visitante/panelVisitante}">Volver al Panel</a>
-    </nav>
+<nav th:replace="~{fragments/navbar :: navbar('Visitante', '/visitante/panelVisitante')}"></nav>
 
-    <div class="form-container">
-        <form th:action="@{/visitante/inscripcion/guardar}" th:object="${participacion}" method="post">
-            <label for="usuario">Visitante:</label>
-            <select id="usuario" th:field="*{usuario.id}" required>
-                <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}"></option>
-            </select>
-
-            <label for="evento">Evento:</label>
-            <select id="evento" th:field="*{evento.id}" required>
-                <option th:each="e : ${eventos}" th:value="${e.id}" th:text="${e.nombre}"></option>
-            </select>
-
-            <button type="submit">Inscribirse</button>
-        </form>
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-calendar-check me-2"></i>
+                Inscripción a Evento
+            </h2>
+        </div>
     </div>
+
+    <!-- Formulario -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/participaciones/inscribir/{eventoId}(eventoId=${eventoId != null ? eventoId : ''})}" method="post">
+                        
+                        <div class="mb-4">
+                            <label for="evento" class="form-label">
+                                <i class="bi bi-calendar-event text-primary me-1"></i>
+                                Selecciona un Evento *
+                            </label>
+                            <select id="evento" name="eventoId" class="form-select" required onchange="this.form.action='/participaciones/inscribir/' + this.value">
+                                <option value="">-- Selecciona un evento --</option>
+                                <option th:each="e : ${eventos}" 
+                                        th:value="${e.id}" 
+                                        th:text="${e.nombre}"
+                                        th:selected="${eventoId != null and e.id == eventoId}"></option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Inscribirse al Evento
+                            </button>
+                            <a th:href="@{/visitante/panelVisitante}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Volver al Panel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="alert alert-info mt-4" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Nota:</strong> Tu inscripción será confirmada automáticamente. Podrás ver tus inscripciones en "Mis Inscripciones".
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

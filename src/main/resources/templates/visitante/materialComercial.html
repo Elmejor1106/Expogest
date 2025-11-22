@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Material Comercial - ExpoGest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('Visitante', '/visitante/panelVisitante')}"></nav>
+
+<div class="container mt-4 mb-5">
+    
+    <!-- Material no disponible -->
+    <div th:if="${material == null}" class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Este stand aún no tiene material comercial disponible.
+        <a href="javascript:history.back()" class="btn btn-sm btn-outline-warning ms-3">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <!-- Material disponible -->
+    <div th:if="${material != null}">
+        
+        <!-- Header con logo -->
+        <div class="card mb-4 shadow-lg">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <!-- Logo -->
+                    <div class="col-md-3 text-center" th:if="${material.logoUrl != null && !material.logoUrl.isEmpty()}">
+                        <img th:src="${material.logoUrl}" alt="Logo Empresa" 
+                             class="img-fluid rounded shadow" 
+                             style="max-height: 200px;">
+                    </div>
+                    
+                    <!-- Descripción -->
+                    <div th:class="${material.logoUrl != null && !material.logoUrl.isEmpty() ? 'col-md-9' : 'col-12'}">
+                        <h2 class="mb-3">
+                            <i class="bi bi-shop-window text-primary me-2"></i>
+                            Información Comercial
+                        </h2>
+                        <p class="lead" th:text="${material.descripcion}" style="text-align: justify;"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catálogos PDF -->
+        <div th:if="${material.catalogoUrls != null && !material.catalogoUrls.isEmpty()}" 
+             class="card mb-4 shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-file-earmark-pdf me-2"></i>
+                    Catálogos Descargables
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4" th:each="url, stat : ${material.catalogoUrls}">
+                        <div class="card h-100 border-danger">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-pdf display-1 text-danger"></i>
+                                <h5 class="card-title mt-3">Catálogo [[${stat.index + 1}]]</h5>
+                                <a th:href="${url}" target="_blank" class="btn btn-danger">
+                                    <i class="bi bi-download me-2"></i>Descargar PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Galería Multimedia -->
+        <div th:if="${material.multimediaUrls != null && !material.multimediaUrls.isEmpty()}" 
+             class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-camera-video me-2"></i>
+                    Galería Multimedia
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6 col-lg-4" th:each="url, stat : ${material.multimediaUrls}">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <!-- Detectar tipo de contenido -->
+                                <div th:if="${#strings.contains(url, 'youtube') or #strings.contains(url, 'youtu.be')}">
+                                    <i class="bi bi-youtube display-1 text-danger"></i>
+                                    <h6 class="card-title mt-3">Video [[${stat.index + 1}]]</h6>
+                                    <a th:href="${url}" target="_blank" class="btn btn-outline-danger">
+                                        <i class="bi bi-play-circle me-2"></i>Ver en YouTube
+                                    </a>
+                                </div>
+                                
+                                <div th:if="${#strings.endsWith(url, '.mp4') or #strings.endsWith(url, '.webm')}">
+                                    <i class="bi bi-camera-video display-1 text-primary"></i>
+                                    <h6 class="card-title mt-3">Video [[${stat.index + 1}]]</h6>
+                                    <a th:href="${url}" target="_blank" class="btn btn-outline-primary">
+                                        <i class="bi bi-play-circle me-2"></i>Reproducir
+                                    </a>
+                                </div>
+                                
+                                <div th:if="${#strings.endsWith(url, '.jpg') or #strings.endsWith(url, '.jpeg') or #strings.endsWith(url, '.png')}">
+                                    <img th:src="${url}" alt="Imagen" class="img-fluid rounded mb-2" 
+                                         style="max-height: 200px; object-fit: cover;">
+                                    <h6 class="card-title">Imagen [[${stat.index + 1}]]</h6>
+                                    <a th:href="${url}" target="_blank" class="btn btn-outline-info btn-sm">
+                                        <i class="bi bi-zoom-in me-1"></i>Ver completa
+                                    </a>
+                                </div>
+                                
+                                <!-- Fallback para otros tipos -->
+                                <div th:unless="${#strings.contains(url, 'youtube') or #strings.contains(url, 'youtu.be') or 
+                                                 #strings.endsWith(url, '.mp4') or #strings.endsWith(url, '.webm') or
+                                                 #strings.endsWith(url, '.jpg') or #strings.endsWith(url, '.jpeg') or #strings.endsWith(url, '.png')}">
+                                    <i class="bi bi-link-45deg display-1 text-secondary"></i>
+                                    <h6 class="card-title mt-3">Recurso [[${stat.index + 1}]]</h6>
+                                    <a th:href="${url}" target="_blank" class="btn btn-outline-secondary">
+                                        <i class="bi bi-box-arrow-up-right me-2"></i>Abrir
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón volver -->
+        <div class="text-center mt-4">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-arrow-left me-2"></i>Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

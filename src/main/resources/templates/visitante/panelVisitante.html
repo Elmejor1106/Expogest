@@ -29,11 +29,20 @@
                     </div>
 
                     <div class="d-grid gap-3 col-md-8 mx-auto">
-                        <a th:href="@{/visitante/inscripcion}" class="btn btn-primary btn-lg">
-                            <i class="bi bi-calendar-check me-2"></i>Inscribirse a Evento
+                        <a th:href="@{/eventos}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-search me-2"></i>Buscar Eventos Activos
                         </a>
-                        <a th:href="@{/eventos}" class="btn btn-outline-primary btn-lg">
-                            <i class="bi bi-list-ul me-2"></i>Ver Eventos Disponibles
+                        
+                        <a th:href="@{/participaciones}" class="btn btn-success btn-lg">
+                            <i class="bi bi-ticket-perforated me-2"></i>Mis Inscripciones
+                        </a>
+                        
+                        <!-- <a th:href="@{/visitante/material-comercial-lista}" class="btn btn-info btn-lg">
+                            <i class="bi bi-shop-window me-2"></i>Material Comercial de Expositores
+                        </a> -->
+                        
+                        <a th:href="@{/visitante/inscripcion}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-calendar-check me-2"></i>Inscribirse a Evento
                         </a>
                     </div>
                 </div>

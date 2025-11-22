@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Material Comercial - ExpoGest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('Visitante', '/visitante/panelVisitante')}"></nav>
+
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-shop-window me-2"></i>
+                Material Comercial de Expositores
+            </h2>
+        </div>
+    </div>
+
+    <!-- Selector de Evento -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="get" action="/visitante/material-comercial-lista" class="row g-3">
+                <div class="col-md-10">
+                    <label for="eventoId" class="form-label">
+                        <i class="bi bi-calendar-event text-primary me-1"></i>
+                        Selecciona un Evento
+                    </label>
+                    <select name="eventoId" id="eventoId" class="form-select" required onchange="this.form.submit()">
+                        <option value="">-- Selecciona un evento --</option>
+                        <option th:each="e : ${eventos}" 
+                                th:value="${e.id}" 
+                                th:text="${e.nombre}"
+                                th:selected="${evento != null and e.id == evento.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i>Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de Material Comercial -->
+    <div th:if="${materiales != null and !materiales.isEmpty()}">
+        <h4 class="mb-3">
+            <i class="bi bi-grid-3x3 me-2"></i>
+            Material Disponible: <span class="badge bg-info" th:text="${#lists.size(materiales)}"></span>
+        </h4>
+        
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4" th:each="item : ${materiales}">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img th:if="${item.material != null and item.material.logoUrl != null}" 
+                             th:src="${item.material.logoUrl}" 
+                             alt="Logo" 
+                             class="img-fluid rounded-3 shadow-sm mb-3" 
+                             style="max-height: 120px; object-fit: contain;"
+                             onerror="this.src='https://via.placeholder.com/120?text=Sin+Logo'">
+                        <div th:if="${item.material == null or item.material.logoUrl == null}" 
+                             class="text-muted mb-3">
+                            <i class="bi bi-image" style="font-size: 4rem;"></i>
+                        </div>
+                        
+                        <h5 class="card-title">
+                            <i class="bi bi-shop"></i> 
+                            Stand <span th:text="${item.stand.numero}"></span>
+                        </h5>
+                        
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-person-badge me-1"></i>
+                            <span th:text="${item.expositor != null ? item.expositor.nombre : 'Sin expositor'}"></span>
+                        </p>
+                        
+                        <p class="text-muted small mb-3" style="height: 60px; overflow: hidden;">
+                            <span th:if="${item.material != null}" 
+                                  th:text="${item.material.descripcion}"></span>
+                            <span th:if="${item.material == null}" 
+                                  class="text-muted fst-italic">Sin material disponible</span>
+                        </p>
+                        
+                        <a th:if="${item.material != null}" 
+                           th:href="@{/material-comercial/ver/{id}(id=${item.stand.id})}" 
+                           class="btn btn-info w-100">
+                            <i class="bi bi-eye me-2"></i>Ver Material Completo
+                        </a>
+                        <button th:if="${item.material == null}" 
+                                class="btn btn-secondary w-100" disabled>
+                            <i class="bi bi-x-circle me-2"></i>Sin Material
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sin materiales -->
+    <div th:if="${evento != null and (materiales == null or materiales.isEmpty())}" 
+         class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-shop-window display-1 text-muted d-block mb-3"></i>
+            <h4 class="text-muted">No hay material comercial disponible</h4>
+            <p class="text-muted">Los expositores de este evento aún no han subido su material comercial.</p>
+        </div>
+    </div>
+
+    <!-- Sin evento seleccionado -->
+    <div th:if="${evento == null}" class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-calendar-x display-1 text-muted d-block mb-3"></i>
+            <h4 class="text-muted">Selecciona un evento</h4>
+            <p class="text-muted">Por favor, selecciona un evento para ver el material comercial de los expositores.</p>
+        </div>
+    </div>
+
+    <!-- Botón volver -->
+    <div class="mt-4">
+        <a th:href="@{/visitante/panelVisitante}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Volver al Panel
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

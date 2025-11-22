@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Stands del Evento - ExpoGest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('Eventos', '/eventos')}"></nav>
+
+<div class="container mt-4 mb-5">
+    <!-- Header del Evento -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-grid-3x3-gap me-2"></i>
+                Stands del Evento: <span th:text="${evento.nombre}"></span>
+            </h2>
+            <p class="mb-0 mt-2">
+                <i class="bi bi-calendar3 me-2"></i>
+                <span th:text="${#temporals.format(evento.fechaInicio, 'dd/MM/yyyy')}"></span>
+                - 
+                <span th:text="${#temporals.format(evento.fechaFin, 'dd/MM/yyyy')}"></span>
+            </p>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-0" th:text="${evento.descripcion}"></p>
+        </div>
+    </div>
+
+    <!-- Lista de Stands -->
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="stand : ${stands}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-shop me-2"></i>
+                        Stand <span th:text="${stand.numero}"></span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title" th:text="${stand.nombre}">Nombre del Stand</h6>
+                    
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            <span th:text="${stand.ubicacion}"></span>
+                        </small>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="bi bi-rulers me-1"></i>
+                            <span th:text="${stand.dimensiones}"></span>
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="badge bg-info" th:text="${stand.estado}"></span>
+                    </div>
+                    
+                    <!-- Material Comercial del Stand -->
+                    <div class="border-top pt-3">
+                        <div th:if="${materialesPorStand[stand.id] != null}">
+                            <h6 class="text-primary">
+                                <i class="bi bi-shop-window me-1"></i>Material Comercial
+                            </h6>
+                            
+                            <!-- Descripción -->
+                            <p class="small text-muted mb-2" th:text="${materialesPorStand[stand.id].descripcion}"></p>
+                            
+                            <!-- Botones de acceso -->
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/material-comercial/ver/__${stand.id}__}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye me-1"></i>Ver Material Completo
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${materialesPorStand[stand.id] == null}">
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Sin material comercial disponible
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sin Stands -->
+    <div th:if="${#lists.isEmpty(stands)}" class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        No hay stands registrados para este evento aún.
+    </div>
+    
+    <!-- Botón Volver -->
+    <div class="mt-4">
+        <a th:href="@{/eventos}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Volver a Eventos
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

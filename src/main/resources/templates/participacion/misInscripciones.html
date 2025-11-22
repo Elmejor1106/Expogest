@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Inscripciones - ExpoGest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('Visitante', '/visitante/panelVisitante')}"></nav>
+
+<div class="container mt-4 mb-5">
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo} + ' alert-dismissible fade show'" role="alert">
+        <i th:class="${tipo == 'success' ? 'bi bi-check-circle-fill' : 'bi bi-exclamation-triangle-fill'} + ' me-2'"></i>
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-ticket-perforated me-2"></i>
+                    Mis Inscripciones a Eventos
+                </h2>
+                <a th:href="@{/visitante/panelVisitante}" class="btn btn-light">
+                    <i class="bi bi-plus-circle me-2"></i>Buscar Más Eventos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de participaciones -->
+    <div class="row g-3">
+        <div class="col-md-6" th:each="participacion : ${participaciones}">
+            <div class="card h-100 shadow-sm" 
+                 th:classappend="${participacion.estado.toString() == 'CANCELADA' ? 'border-danger' : 'border-success'}">
+                <div class="card-header" 
+                     th:classappend="${participacion.estado.toString() == 'CANCELADA' ? 'bg-danger text-white' : 'bg-success text-white'}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi bi-calendar-event me-2"></i>
+                            <strong th:if="${eventosMap.get(participacion.eventoId) != null}" 
+                                    th:text="${eventosMap.get(participacion.eventoId).nombre}"></strong>
+                            <strong th:if="${eventosMap.get(participacion.eventoId) == null}">Evento Desconocido</strong>
+                        </span>
+                        <span th:switch="${participacion.estado.toString()}">
+                            <span th:case="'CONFIRMADA'" class="badge bg-light text-success">
+                                <i class="bi bi-check-circle-fill"></i> CONFIRMADA
+                            </span>
+                            <span th:case="'CANCELADA'" class="badge bg-light text-danger">
+                                <i class="bi bi-x-circle-fill"></i> CANCELADA
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <i class="bi bi-clock text-muted me-2"></i>
+                        <strong>Inscrito el:</strong>
+                        <span th:text="${#temporals.format(participacion.fechaInscripcion, 'dd/MM/yyyy HH:mm')}"></span>
+                    </p>
+                    
+                    <hr>
+                    
+                    <!-- Acciones -->
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/cronograma/ver/{id}(id=${participacion.eventoId})}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-calendar-week me-1"></i>Ver Cronograma
+                        </a>
+                        
+                        <form th:if="${participacion.estado.toString() == 'CONFIRMADA'}"
+                              th:action="@{/participaciones/cancelar/{id}(id=${participacion.id})}" 
+                              method="post" 
+                              style="display: inline;"
+                              onsubmit="return confirm('¿Estás seguro de cancelar esta inscripción?');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensaje cuando no hay inscripciones -->
+        <div th:if="${#lists.isEmpty(participaciones)}" class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h3 class="mt-3">No tienes inscripciones aún</h3>
+                    <p class="text-muted">Explora los eventos activos y regístrate en los que te interesen</p>
+                    <a th:href="@{/visitante/panelVisitante}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-search me-2"></i>Buscar Eventos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

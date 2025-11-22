@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Seleccionar Evento - Cronograma</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: styles}"></div>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('Organizador', '/organizador/panelOrganizador')}"></nav>
+
+<div class="container mt-4 mb-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0"><i class="bi bi-clock-history me-2"></i>Seleccionar Evento para Gestionar Cronograma</h2>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-4">Selecciona el evento del cual deseas gestionar el cronograma de actividades.</p>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" th:each="evento : ${eventos}">
+                    <div class="card h-100 border-0 shadow-sm" 
+                         th:classappend="${evento.estado.name() == 'ACTIVO'} ? 'border-success border-2' : ''">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0" th:text="${evento.nombre}">Evento</h5>
+                                <span class="badge" 
+                                      th:classappend="${evento.estado.name() == 'ACTIVO'} ? 'bg-success' : 
+                                                      (${evento.estado.name() == 'PLANIFICACION'} ? 'bg-warning' : 
+                                                      (${evento.estado.name() == 'FINALIZADO'} ? 'bg-secondary' : 'bg-danger'))"
+                                      th:text="${evento.estado}">Estado</span>
+                            </div>
+                            
+                            <p class="card-text text-muted small" th:text="${evento.descripcion}">Descripción</p>
+                            
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    <span th:text="${#temporals.format(evento.fechaInicio, 'dd/MM/yyyy')}"></span>
+                                    - 
+                                    <span th:text="${#temporals.format(evento.fechaFin, 'dd/MM/yyyy')}"></span>
+                                </small>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/cronograma/evento/{id}(id=${evento.id})}" 
+                                   class="btn btn-primary btn-sm">
+                                    <i class="bi bi-calendar-check me-2"></i>Gestionar Cronograma
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(eventos)}" class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                No hay eventos disponibles. 
+                <a th:href="@{/eventos/nuevo}" class="alert-link">Crear un nuevo evento</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
