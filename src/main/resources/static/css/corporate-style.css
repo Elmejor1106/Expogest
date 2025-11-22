@@ -1,0 +1,455 @@
+/* ExpoGest - Estilos Corporativos Profesionales */
+
+:root {
+    /* Colores Corporativos */
+    --primary-blue: #1e3a8a;
+    --primary-light: #2563eb;
+    --primary-lighter: #3b82f6;
+    --accent-blue: #60a5fa;
+    
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    
+    /* Tipografía */
+    --font-main: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    --font-heading: 'Inter', 'Segoe UI', sans-serif;
+    
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background Corporativo */
+.corporate-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(180deg, #ffffff 0%, var(--gray-50) 50%, var(--gray-100) 100%);
+}
+
+.corporate-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(30deg, var(--gray-100) 12%, transparent 12.5%, transparent 87%, var(--gray-100) 87.5%),
+        linear-gradient(150deg, var(--gray-100) 12%, transparent 12.5%, transparent 87%, var(--gray-100) 87.5%);
+    background-size: 80px 140px;
+    background-position: 0 0, 40px 70px;
+    opacity: 0.3;
+}
+
+/* Navbar Corporativo */
+.navbar-corporate {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    padding: 0.75rem 0;
+}
+
+.navbar-corporate .navbar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    letter-spacing: -0.5px;
+}
+
+.navbar-corporate .nav-link {
+    color: var(--gray-600);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-corporate .nav-link:hover {
+    color: var(--primary-blue);
+}
+
+/* Botones Corporativos */
+.btn-corporate-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%);
+    border: none;
+    color: white;
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+    letter-spacing: 0.3px;
+}
+
+.btn-corporate-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35);
+    color: white;
+}
+
+.btn-corporate-secondary {
+    background: white;
+    border: 1.5px solid var(--gray-300);
+    color: var(--gray-700);
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all 0.3s ease;
+}
+
+.btn-corporate-secondary:hover {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-corporate-success {
+    background: var(--success);
+    border: none;
+    color: white;
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-corporate-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-corporate-danger {
+    background: var(--danger);
+    border: none;
+    color: white;
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-corporate-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    color: white;
+}
+
+/* Cards Corporativos */
+.card-corporate {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.card-corporate:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.card-corporate-header {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.card-corporate-body {
+    padding: 1.5rem;
+}
+
+/* Formularios Corporativos */
+.form-corporate .form-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-corporate .form-control,
+.form-corporate .form-select {
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    transition: all 0.3s ease;
+}
+
+.form-corporate .form-control:focus,
+.form-corporate .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    outline: none;
+}
+
+/* Badges Corporativos */
+.badge-corporate-primary {
+    background: var(--primary-blue);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-corporate-success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-corporate-warning {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-corporate-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-corporate-info {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Tablas Corporativas */
+.table-corporate {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.table-corporate thead {
+    background: var(--gray-50);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.table-corporate th {
+    font-weight: 700;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 1rem 1.5rem;
+}
+
+.table-corporate td {
+    padding: 1rem 1.5rem;
+    color: var(--gray-600);
+    vertical-align: middle;
+}
+
+.table-corporate tbody tr {
+    border-bottom: 1px solid var(--gray-100);
+    transition: background-color 0.2s ease;
+}
+
+.table-corporate tbody tr:hover {
+    background-color: var(--gray-50);
+}
+
+/* Alerts Corporativos */
+.alert-corporate {
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    border-left: 4px solid;
+    font-weight: 500;
+}
+
+.alert-corporate-success {
+    background: #d1fae5;
+    border-color: var(--success);
+    color: #065f46;
+}
+
+.alert-corporate-warning {
+    background: #fef3c7;
+    border-color: var(--warning);
+    color: #92400e;
+}
+
+.alert-corporate-danger {
+    background: #fee2e2;
+    border-color: var(--danger);
+    color: #991b1b;
+}
+
+.alert-corporate-info {
+    background: #dbeafe;
+    border-color: var(--info);
+    color: #1e40af;
+}
+
+/* Modales Corporativos */
+.modal-corporate .modal-content {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+}
+
+.modal-corporate .modal-header {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-corporate .modal-title {
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+.modal-corporate .modal-body {
+    padding: 1.5rem;
+}
+
+.modal-corporate .modal-footer {
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+    padding: 1rem 1.5rem;
+}
+
+/* Títulos Corporativos */
+.heading-corporate {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--gray-900);
+    letter-spacing: -0.5px;
+}
+
+.heading-corporate-xl {
+    font-size: 2.25rem;
+    line-height: 1.2;
+}
+
+.heading-corporate-lg {
+    font-size: 1.875rem;
+    line-height: 1.25;
+}
+
+.heading-corporate-md {
+    font-size: 1.5rem;
+    line-height: 1.33;
+}
+
+.heading-corporate-sm {
+    font-size: 1.25rem;
+    line-height: 1.4;
+}
+
+/* Utilidades */
+.text-corporate-primary {
+    color: var(--primary-blue);
+}
+
+.text-corporate-muted {
+    color: var(--gray-500);
+}
+
+.bg-corporate-light {
+    background: var(--gray-50);
+}
+
+.border-corporate {
+    border-color: var(--gray-200);
+}
+
+/* Animaciones sutiles */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .heading-corporate-xl {
+        font-size: 1.875rem;
+    }
+    
+    .heading-corporate-lg {
+        font-size: 1.5rem;
+    }
+}
