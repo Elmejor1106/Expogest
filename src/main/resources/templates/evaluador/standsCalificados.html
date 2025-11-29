@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stands Calificados</title>
+    <link rel="stylesheet" th:href="@{/css/corporate-style.css}" />
+</head>
+<body>
+    <h1>Stands Calificados</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="stand : ${standsCalificados}">
+                <td th:text="${stand.nombre}"></td>
+                <td th:text="${stand.descripcion}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/evaluador/panel}">Volver al panel</a>
+</body>
+</html>

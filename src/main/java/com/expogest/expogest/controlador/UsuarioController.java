@@ -67,7 +67,7 @@ public class UsuarioController {
             } else if (rol == Usuario.Rol.VISITANTE) {
                 return "redirect:/visitante/panelVisitante";
             } else if (rol == Usuario.Rol.EVALUADOR) {
-                return "redirect:/evaluador/panelEvaluador";
+                return "redirect:/evaluador/panel";
             } else {
                 return "redirect:/";
             }

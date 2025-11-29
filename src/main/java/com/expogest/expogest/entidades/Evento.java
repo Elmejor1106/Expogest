@@ -59,6 +59,11 @@ public class Evento {
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }
+
+    // Devuelve la lista de IDs de stands asociados
+    public List<String> getStandIds() {
+        return standsAsociados;
+    }
     public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }

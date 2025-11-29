@@ -19,9 +19,11 @@ public class AuthFilter implements Filter {
         HttpSession session = httpRequest.getSession(false);
         
         String requestURI = httpRequest.getRequestURI();
+        System.out.println("AuthFilter: Request URI: " + requestURI);
         
         // Rutas públicas que no requieren autenticación
         if (isPublicRoute(requestURI)) {
+            System.out.println("AuthFilter: Public route, skipping authentication.");
             chain.doFilter(request, response);
             return;
         }
@@ -32,6 +34,12 @@ public class AuthFilter implements Filter {
             usuario = (Usuario) session.getAttribute("usuario");
         }
         
+        if (usuario != null) {
+            System.out.println("AuthFilter: User logged in: " + usuario.getCorreo() + ", Role: " + usuario.getRol());
+        } else {
+            System.out.println("AuthFilter: User not logged in.");
+        }
+
         // Si no hay usuario logueado, redirigir a login
         if (usuario == null) {
             httpResponse.sendRedirect("/login");
@@ -42,11 +50,14 @@ public class AuthFilter implements Filter {
         String rol = usuario.getRol().toString();
         String metodo = httpRequest.getMethod();
         
-        if (!tienePermiso(requestURI, rol, metodo)) {
+        boolean hasPermission = tienePermiso(requestURI, rol, metodo);
+        System.out.println("AuthFilter: URI: " + requestURI + ", Role: " + rol + ", Has Permission: " + hasPermission);
+
+        if (!hasPermission) {
             httpResponse.sendRedirect("/acceso-denegado");
             return;
         }
-        
+                
         chain.doFilter(request, response);
     }
     
@@ -106,7 +117,9 @@ public class AuthFilter implements Filter {
                    uri.startsWith("/eventos") ||  // Puede ver eventos (ya es público)
                    uri.startsWith("/cronograma/ver") ||  // Puede ver cronograma público
                    uri.startsWith("/material-comercial/ver/") ||  // Ver material comercial de stands
-                   uri.startsWith("/evaluaciones");
+                   uri.startsWith("/evaluaciones") ||
+                   uri.startsWith("/evaluador/reporte") ||
+                   uri.startsWith("/reportes/evaluaciones");
         }
         
         // VISITANTE
